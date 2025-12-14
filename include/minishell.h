@@ -14,6 +14,7 @@
 #include "../Libft/libft.h"
 #include "minishell_type.h"
 #include "minishell_parse.h"
+#include "minishell_builtin.h"
 
 
 //. FUNCTIONS

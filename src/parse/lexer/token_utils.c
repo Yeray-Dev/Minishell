@@ -66,7 +66,7 @@ int token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
         {
             new_token = ft_substr(line, *start, *i - *start);
             token_add_list(list_token, new_token);
-            printf("PRIMERO: %s\n", new_token); //! TESTING
+           printf("PRIMERO: %s\n", new_token); //! TESTING
             free(new_token);
         }
         (*i)++;

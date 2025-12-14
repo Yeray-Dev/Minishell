@@ -7,6 +7,8 @@ int main (void)
 
     list_token.top = NULL;
     list_token.last = NULL;
+   // int g_exit_status = 0; necesario inicializar para manejar el codigo de salida
+
     init_signals();
 
     while (1)

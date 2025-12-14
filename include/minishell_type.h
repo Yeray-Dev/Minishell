@@ -9,6 +9,18 @@ typedef enum e_token_type
     TOKEN_REDIRECTIONS
 }token_type;
 
+typedef enum e_builtin_type
+{
+    BI_NONE,
+    BI_ECHO,
+    BI_PWD,
+    BI_CD,
+    BI_EXPORT,
+    BI_UNSET,
+    BI_ENV,
+    BI_EXIT
+} t_builtin_type;
+
 // DEFINE
 
 #define QUOTES 34
@@ -24,7 +36,7 @@ typedef struct s_cmd
     char *flag_name;
     char *path;
     int is_att;
-    int is_builtins;
+    t_builtin_type builtin_type;
 }t_cmd;
 typedef struct s_tokens
 {
@@ -47,3 +59,4 @@ typedef struct s_list_token
 // GLOBALS
 
 extern volatile sig_atomic_t handler;
+extern int g_exit_status;
