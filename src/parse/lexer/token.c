@@ -47,7 +47,6 @@ void token_add_list(t_list_token *list_token, char* new_token)
         if (!token)
             return;
         token->name = ft_strdup(new_token);
-        // list_token->top->position++; // Segmentation fault
         token->next = NULL;
         if (list_token->top == NULL)
         {
@@ -61,40 +60,42 @@ void token_add_list(t_list_token *list_token, char* new_token)
         }
 }
 //! TESTING
-// static void token_type(t_list_token *token)
-// {
-//     t_tokens *tmp;
+static void ft_token_type(t_list_token *token)
+{
+    t_tokens *tmp;
 
-//     tmp = token->top;
-//     while (tmp != NULL)
-//     {
-//         if (ft_strncmp(tmp->name, "|", 1) == 0)
-//             tmp->type = TOKEN_PIPE;
-//         else if (ft_strncmp(tmp->name, "<", 1) == 0 || 
-//                 ft_strncmp(tmp->name, "<<", 2) == 0 ||
-//                 ft_strncmp(tmp->name, ">", 1) == 0 ||
-//                 ft_strncmp(tmp->name, ">>", 2) == 0)
-//             tmp->type = TOKEN_REDIRECTIONS;
-//         else
-//             tmp->type = TOKEN_CMD;
-//         tmp = tmp->next;
-//     }
-//     // // print_typetoken(token) //! TESTING
-// }
+    tmp = token->top;
+    while (tmp != NULL)
+    {
+        if (ft_strncmp(tmp->name, "|", 1) == 0)
+        {
+            tmp->type = TOKEN_PIPE;
+            printf("AQUI");
+        }
+        else if (ft_strncmp(tmp->name, "<", 1) == 0 || 
+                ft_strncmp(tmp->name, "<<", 2) == 0 ||
+                ft_strncmp(tmp->name, ">", 1) == 0 ||
+                ft_strncmp(tmp->name, ">>", 2) == 0)
+            tmp->type = TOKEN_REDIRECTIONS;
+        else
+            tmp->type = TOKEN_CMD;
+        tmp = tmp->next;
+    }
+}
 //! END TESTING
 
 int init_token(char *line, t_list_token *list_token)
 {
     if (line != NULL)
     {
-        // token_type(&list_token);
         token_stract_tokens(line, list_token);
+        ft_token_type(list_token);
     }
     t_tokens *current = list_token->top;
 
     while(current != NULL)
     {
-        printf("CMD = %s\n", current->name); //, POSITION = %d , current->position
+        printf("CMD = %s, TYPE = %d\n", current->name, current->type); //! TESTING
         current = current->next;
     }
     return 1;

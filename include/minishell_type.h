@@ -4,9 +4,9 @@
 
 typedef enum e_token_type
 {
-    TOKEN_CMD,
-    TOKEN_PIPE,
-    TOKEN_REDIRECTIONS
+    TOKEN_CMD = 0,
+    TOKEN_PIPE = 1,
+    TOKEN_REDIRECTIONS = 3
 }token_type;
 
 // DEFINE
