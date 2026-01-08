@@ -109,6 +109,7 @@ int exec_builtin(t_cmd *cmd)
     return (status);
 }
 
+//main pwd
 /*int main(void)
 {
     t_cmd cmd;
@@ -125,6 +126,7 @@ int exec_builtin(t_cmd *cmd)
     return (0);
 }*/
 
+//main echo
 /*
 int main(void)
 {
@@ -146,6 +148,7 @@ int main(void)
     return (0);
 }*/
 
+//main env
 int main(void)
 {
     t_cmd cmd;

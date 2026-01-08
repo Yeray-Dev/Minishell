@@ -29,6 +29,12 @@ typedef enum e_builtin_type
 
 // STRUCTS
 
+typedef struct s_shell
+{
+    char    **env;
+    int     exit_status;
+} t_shell;
+
 typedef struct s_cmd
 {
     char *cmd_name;
@@ -38,6 +44,7 @@ typedef struct s_cmd
     int is_att;
     t_builtin_type builtin_type;
 }t_cmd;
+
 typedef struct s_tokens
 {
     char *name;
