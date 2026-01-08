@@ -11,6 +11,10 @@ void detect_builtin(t_cmd *cmd)
         cmd->builtin_type = BI_ECHO;
     else if (strcmp(cmd->cmd_name, "env") == 0)
         cmd->builtin_type = BI_ENV;
+    else if (strcmp(cmd->cmd_name, "export") == 0)
+        cmd->builtin_type = BI_EXPORT;
+    else if (strcmp(cmd->cmd_name, "unset") == 0)
+        cmd->builtin_type = BI_UNSET;
     else
         cmd->builtin_type = BI_NONE;
 }
@@ -30,6 +34,10 @@ int exec_builtin(t_cmd *cmd)
         status = builtin_echo(cmd);
     else if (cmd->builtin_type == BI_ENV)
         status = builtin_env(cmd);
+    else if (cmd->builtin_type == BI_EXPORT)
+        status = builtin_export(cmd);
+    else if (cmd->builtin_type == BI_UNSET)
+        status = builtin_unset(cmd);;
     else
         status = 1;
     g_exit_status = status;
