@@ -7,7 +7,8 @@ typedef enum e_builtin_type
 {
     BI_NONE,
     BI_ECHO,
-    BI_PWD
+    BI_PWD,
+    BI_ENV
 } t_builtin_type;
 
 typedef struct s_cmd
@@ -28,10 +29,12 @@ void detect_builtin(t_cmd *cmd)
     if (!cmd || !cmd->cmd_name)
         return;
 
-    if (strcmp(cmd->cmd_name, "pwd") == 0)
+    if (strcmp(cmd->cmd_name, "pwd") == 0) //crear ft_strcmp
         cmd->builtin_type = BI_PWD;
     else if (strcmp(cmd->cmd_name, "echo") == 0)
         cmd->builtin_type = BI_ECHO;
+    else if (strcmp(cmd->cmd_name, "env") == 0)
+        cmd->builtin_type = BI_ENV;
     else
         cmd->builtin_type = BI_NONE;
 }
@@ -69,6 +72,22 @@ int builtin_pwd(t_cmd *cmd)
     }
 }
 
+extern char **environ;
+
+int builtin_env(t_cmd *cmd)
+{
+    int i;
+
+    (void)cmd;
+    i = 0;
+    while (environ[i])
+    {
+        printf("%s\n", environ[i]);
+        i++;
+    }
+    return (0);
+}
+
 int exec_builtin(t_cmd *cmd)
 {
     int status;
@@ -82,6 +101,8 @@ int exec_builtin(t_cmd *cmd)
         status = builtin_pwd(cmd);
     else if (cmd->builtin_type == BI_ECHO)
         status = builtin_echo(cmd);
+    else if (cmd->builtin_type == BI_ENV)
+        status = builtin_env(cmd);
     else
         status = 1;
     g_exit_status = status;
@@ -104,12 +125,11 @@ int exec_builtin(t_cmd *cmd)
     return (0);
 }*/
 
-
+/*
 int main(void)
 {
     t_cmd cmd;
 
-    /* ---- Simula: pwd ---- */
     cmd.cmd_name = "pwd";
     cmd.args_name = NULL;
     cmd.flag_name = NULL;
@@ -118,12 +138,27 @@ int main(void)
 
     detect_builtin(&cmd);
     exec_builtin(&cmd);
-
-    /* ---- Simula: echo $? ---- */
     cmd.cmd_name = "echo";
     cmd.args_name = "$?";
     detect_builtin(&cmd);
     exec_builtin(&cmd);
 
     return (0);
+}*/
+
+int main(void)
+{
+    t_cmd cmd;
+
+    cmd.cmd_name = "env";
+    cmd.args_name = NULL;
+    cmd.flag_name = NULL;
+    cmd.path = NULL;
+    cmd.is_att = 0;
+
+    detect_builtin(&cmd);
+    exec_builtin(&cmd);
+
+    return (0);
 }
+

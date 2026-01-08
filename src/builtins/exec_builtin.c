@@ -9,6 +9,8 @@ void detect_builtin(t_cmd *cmd)
         cmd->builtin_type = BI_PWD;
     else if (strcmp(cmd->cmd_name, "echo") == 0)
         cmd->builtin_type = BI_ECHO;
+    else if (strcmp(cmd->cmd_name, "env") == 0)
+        cmd->builtin_type = BI_ENV;
     else
         cmd->builtin_type = BI_NONE;
 }
@@ -26,6 +28,8 @@ int exec_builtin(t_cmd *cmd)
         status = builtin_pwd(cmd);
     else if (cmd->builtin_type == BI_ECHO)
         status = builtin_echo(cmd);
+    else if (cmd->builtin_type == BI_ENV)
+        status = builtin_env(cmd);
     else
         status = 1;
     g_exit_status = status;
