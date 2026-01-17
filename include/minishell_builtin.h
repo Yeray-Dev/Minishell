@@ -5,14 +5,17 @@
 
 // ---------- DETECTAR Y EJECUTAR BUILTINS ----------
 void    detect_builtin(t_cmd *cmd);
-int exec_builtin(t_cmd *cmd);
+int exec_builtin(t_shell *sh, t_cmd *cmd)
+
 
 // ---------- BUILTINS ----------
 int builtin_pwd(t_cmd *cmd);
 int builtin_echo(t_cmd *cmd);
-int builtin_env(char **env);
+int builtin_env(t_shell *sh, t_cmd *cmd);
 int builtin_export(t_shell *sh, t_cmd *cmd);
 int builtin_unset(t_shell *sh, t_cmd *cmd);
+
+
 
 // ---------- FUNCIONES AUXILIARES DE ENTORNO ----------
 char    **env_init(char **envp);       // Inicializa copia del entorno

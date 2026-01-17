@@ -1,20 +1,21 @@
 #include "minishell.h"
 
-int builtin_pwd(t_cmd *cmd)
+int builtin_pwd(t_shell *sh, t_cmd *cmd)
 {
     char *cwd;
-    (void)cmd;
 
+    (void)cmd;
     cwd = getcwd(NULL, 0);
-    if (cwd)
+    if (cwd != NULL)
     {
         printf("%s\n", cwd);
         free(cwd);
-        return (0);
+        sh->exit_status = 0;
     }
     else
     {
         perror("pwd");
-        return (1);
+        sh->exit_status = 1;
     }
+    return (sh->exit_status);
 }

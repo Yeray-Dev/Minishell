@@ -1,4 +1,6 @@
 #include "minishell.h"
+#include <stdlib.h>
+#include <string.h>
 
 static int env_replace(char **env, int idx, const char *var)
 {
@@ -29,7 +31,7 @@ static int env_add(char ***env, const char *var)
         new_env[i] = (*env)[i];
         i++;
     }
-    new_env[i] = strdup(var);
+    new_env[i] = ft_strdup(var);
     if (!new_env[i])
     {
         free(new_env);
@@ -49,6 +51,6 @@ int env_set(char ***env, const char *var)
         return (-1);
     idx = env_get(*env, var);
     if (idx != -1)
-        return env_replace(*env, idx, var);
-    return env_add(env, var);
+        return (env_replace(*env, idx, var));
+    return (env_add(env, var));
 }

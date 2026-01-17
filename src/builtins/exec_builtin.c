@@ -19,27 +19,24 @@ void detect_builtin(t_cmd *cmd)
         cmd->builtin_type = BI_NONE;
 }
 
-int exec_builtin(t_cmd *cmd)
+int exec_builtin(t_shell *sh, t_cmd *cmd)// variable sh que hay que declarar en el main
 {
     int status;
 
-    if (!cmd)
-    {
-        g_exit_status = 1;
+    if (!cmd || !sh)
         return (1);
-    }
     if (cmd->builtin_type == BI_PWD)
         status = builtin_pwd(cmd);
     else if (cmd->builtin_type == BI_ECHO)
         status = builtin_echo(cmd);
     else if (cmd->builtin_type == BI_ENV)
-        status = builtin_env(cmd);
+        status = builtin_env(sh, cmd);
     else if (cmd->builtin_type == BI_EXPORT)
-        status = builtin_export(cmd);
+        status = builtin_export(sh, cmd);
     else if (cmd->builtin_type == BI_UNSET)
-        status = builtin_unset(cmd);;
+        status = builtin_unset(sh, cmd);;
     else
         status = 1;
-    g_exit_status = status;
+    sh->exit_status = status;
     return (status);
 }

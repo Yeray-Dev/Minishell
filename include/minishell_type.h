@@ -38,7 +38,7 @@ typedef struct s_shell
 typedef struct s_cmd
 {
     char *cmd_name;
-    char *args_name;
+    char **args_name;
     char *flag_name;
     char *path;
     int is_att;
@@ -66,4 +66,3 @@ typedef struct s_list_token
 // GLOBALS
 
 extern volatile sig_atomic_t handler;
-extern int g_exit_status;
