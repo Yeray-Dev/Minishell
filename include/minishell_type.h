@@ -1,12 +1,12 @@
-#include "minishell.h"
+// #include "minishell.h"
 
 // ENUM
 
 typedef enum e_token_type
 {
-    TOKEN_CMD = 0,
-    TOKEN_PIPE = 1,
-    TOKEN_REDIRECTIONS = 3
+    TOKEN_CMD,
+    TOKEN_PIPE,
+    TOKEN_REDIRECTIONS
 }token_type;
 
 // DEFINE
@@ -14,24 +14,39 @@ typedef enum e_token_type
 #define QUOTES 34
 #define QUOTE 39
 #define PIPE 124 
+#define REDIR_OUT 62
+#define REDIR_IN 60
+
 
 // STRUCTS
 
 typedef struct s_cmd
 {
-    char *cmd_name;
-    char *args_name;
-    char *flag_name;
+    char **argv; // Cada token
     char *path;
-    int is_att;
-    int is_builtins;
+    char *infile; 
+    char *outfile;
+    char *heredoc_word;
+    int is_heredoc; // Definimos si es heredoc. 0 No 1 Si
+    int is_builtins; // Definimos si es builtins. 0 No 1 Si
+    int append; // \ != 1 si no sobreescribe 1 si sobreescribe
+    int has_pipe; 
+
+    struct s_cmd *next;
 }t_cmd;
+
+typedef struct s_list_cmd
+{
+    t_cmd *top;
+    t_cmd *last;
+
+} t_list_cmd;
+
 typedef struct s_tokens
 {
     char *name;
     int type;
     int quotes;
-    int position;
     struct s_tokens *next;
 
 } t_tokens;
@@ -40,8 +55,17 @@ typedef struct s_list_token
 {
     t_tokens *top;
     t_tokens *last;
-    
+
 } t_list_token;
+
+typedef struct s_shell
+{
+    t_list_token list_token;
+    t_list_cmd cmd_list;
+    char **our_envp;
+    int last_status;
+
+}t_shell;
 
 
 // GLOBALS

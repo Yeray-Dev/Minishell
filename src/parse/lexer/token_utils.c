@@ -2,16 +2,21 @@
 
 int token_is_quote(char *line, int *i)
 {
-    char q;
+    char quote_char;
 
     if (line[*i] == QUOTES || line[*i] == QUOTE)
     {
-        q = line[*i];
+        quote_char = line[*i];
         (*i)++;
 
-        while (line[*i] != q && line[*i] != '\0')
+        while (line[*i] != quote_char && line[*i] != '\0')
+        {
+            if (quote_char == QUOTES && line[*i] == '$' && line[*i -1] != '/'){
+                stract_variables(line, i);
+            }
             (*i)++;
-        if (line[*i] == q)
+        }
+        if (line[*i] == quote_char)
             (*i)++;
         return 1;
     }
@@ -33,6 +38,7 @@ int token_is_pipe(char *line, int *i, int *start, t_list_token *list_token)
         *start = *i;
         new_token = ft_substr(line, *i - 1, 1);
         token_add_list(list_token, new_token);
+        list_token->last->type = TOKEN_PIPE;
         free(new_token);
         return (1);
     }
@@ -62,18 +68,18 @@ int token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
         token_is_double_redirect(line, i, start, list_token);
     else if (line[*i] == '<' || line[*i] == '>')
     {
+        
         if (*i > 0 && line[*i - 1] != ' ')
         {
             new_token = ft_substr(line, *start, *i - *start);
             token_add_list(list_token, new_token);
-            printf("PRIMERO: %s\n", new_token); //! TESTING
             free(new_token);
         }
         (*i)++;
         *start = *i;
         new_token = ft_substr(line, *i - 1, 1);
         token_add_list(list_token, new_token);
-        printf("TERCERO: %s\n", new_token); //! TESTING
+        list_token->last->type = TOKEN_REDIRECTIONS;
         free(new_token);
         return (1);
     }

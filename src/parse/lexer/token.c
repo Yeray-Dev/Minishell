@@ -12,11 +12,14 @@ static void token_stract_tokens(char *line, t_list_token *list_token)
     while(line[i] != '\0')
     {
         start = i;
-        while (line[i] != ' ' && line[i] != '\0')
+        while ((line[i] != ' ' || (line[i] == ' ' && line[i - 1] == '/')) && line[i] != '\0')
         {
+            if (line[i] == '$' && line[i - 1] != '/')
+                stract_variables(line, &i);
             if (token_is_quote(line, &i))
                 break;
-            if (token_is_pipe(line, &i, &start, list_token) || token_is_redirect(line, &i, &start, list_token))
+            if (token_is_pipe(line, &i, &start, list_token) 
+                || token_is_redirect(line, &i, &start, list_token))
             {
                 while (line[i] == ' ')
                     i++;
@@ -33,6 +36,7 @@ static void token_stract_tokens(char *line, t_list_token *list_token)
             token_add_list(list_token, new_token);
             free(new_token);
         }
+        list_token->last->type = TOKEN_CMD;
     }
 }
 
@@ -59,43 +63,17 @@ void token_add_list(t_list_token *list_token, char* new_token)
             list_token->last = token;
         }
 }
-//! TESTING
-static void ft_token_type(t_list_token *token)
-{
-    t_tokens *tmp;
-
-    tmp = token->top;
-    while (tmp != NULL)
-    {
-        if (ft_strncmp(tmp->name, "|", 1) == 0)
-        {
-            tmp->type = TOKEN_PIPE;
-            printf("AQUI");
-        }
-        else if (ft_strncmp(tmp->name, "<", 1) == 0 || 
-                ft_strncmp(tmp->name, "<<", 2) == 0 ||
-                ft_strncmp(tmp->name, ">", 1) == 0 ||
-                ft_strncmp(tmp->name, ">>", 2) == 0)
-            tmp->type = TOKEN_REDIRECTIONS;
-        else
-            tmp->type = TOKEN_CMD;
-        tmp = tmp->next;
-    }
-}
-//! END TESTING
 
 int init_token(char *line, t_list_token *list_token)
 {
     if (line != NULL)
-    {
         token_stract_tokens(line, list_token);
-        ft_token_type(list_token);
-    }
+        
     t_tokens *current = list_token->top;
 
     while(current != NULL)
     {
-        printf("CMD = %s, TYPE = %d\n", current->name, current->type); //! TESTING
+        // printf("%d = %s\n",current->type, current->name);
         current = current->next;
     }
     return 1;

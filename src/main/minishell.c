@@ -1,20 +1,23 @@
 #include "minishell.h"
 
 volatile sig_atomic_t handler = 0;
-int main (void)
+
+int main (int argc, char **argv, char **envp)
 {
-    t_list_token list_token;
+    (void)argc;
+    (void)argv;
 
-    list_token.top = NULL;
-    list_token.last = NULL;
+    t_shell t_shell;
+
     init_signals();
-
+    t_shell.our_envp = duplicate_envp(envp);
+    
     while (1)
     {
         char *line;
         line = readline("MiniShell: > ");
-        parser(line, &list_token);
-        list_token.top = NULL;
+        parser(line, &t_shell);
+        t_shell.list_token.top = NULL;
     }
     return 0;
 }
