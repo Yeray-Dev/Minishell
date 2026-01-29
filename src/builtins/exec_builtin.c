@@ -15,6 +15,10 @@ void detect_builtin(t_cmd *cmd)
         cmd->builtin_type = BI_EXPORT;
     else if (strcmp(cmd->cmd_name, "unset") == 0)
         cmd->builtin_type = BI_UNSET;
+    else if (strcmp(cmd->cmd_name, "cd") == 0)
+        cmd->builtin_type = BI_CD;
+    else if (strcmp(cmd->cmd_name, "exit") == 0)
+        cmd->builtin_type = BI_EXIT;
     else
         cmd->builtin_type = BI_NONE;
 }
@@ -34,9 +38,14 @@ int exec_builtin(t_shell *sh, t_cmd *cmd)// variable sh que hay que declarar en 
     else if (cmd->builtin_type == BI_EXPORT)
         status = builtin_export(sh, cmd);
     else if (cmd->builtin_type == BI_UNSET)
-        status = builtin_unset(sh, cmd);;
+        status = builtin_unset(sh, cmd);
+    else if (cmd->builtin_type == BI_CD)
+        status = builtin_cd(sh, cmd);
+    else if (cmd->builtin_type == BI_EXIT)
+        status = builtin_exit(sh, cmd);
     else
         status = 1;
     sh->exit_status = status;
     return (status);
 }
+
