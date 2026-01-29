@@ -15,6 +15,7 @@ int builtin_env(t_shell *sh, t_cmd *cmd);
 int builtin_export(t_shell *sh, t_cmd *cmd);
 int builtin_unset(t_shell *sh, t_cmd *cmd);
 void builtin_exit(t_shell *sh, t_cmd *cmd);
+void	builtin_cd(t_shell *sh, t_cmd *cmd);
 
 // ---------- AUXILIARS ------------
 void free_dblptr(char **ptr);
@@ -46,3 +47,4 @@ int change_directory(t_shell *sh, char *path, char *arg);
 char *get_target_path(t_shell *sh, char *arg);
 
 #endif
+
