@@ -43,6 +43,19 @@ static int env_add(char ***env, const char *var)
     return (0);
 }
 
+static int env_add_empty(char ***env, const char *name)
+{
+    char *tmp;
+    int  ret;
+
+    tmp = ft_strjoin(name, "=");
+    if (!tmp)
+        return (-1);
+    ret = env_add(env, tmp);
+    free(tmp);
+    return (ret);
+}
+
 int env_set(char ***env, const char *var)
 {
     int idx;
