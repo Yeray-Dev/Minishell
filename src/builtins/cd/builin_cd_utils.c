@@ -1,94 +1,60 @@
 #include "minishell.h"
 
-char	*get_home_cached(t_shell *sh)
+/* Devuelve el valor de la variable de entorno local */
+char *get_local_env(const char *key, char **env)
 {
-	char	*home;
-
-	home = get_var_value("HOME", sh);
-	if (home && home[0] != '\0')
-	{
-		if (!sh->cd_home || ft_strcmp(home, sh->cd_home) != 0)
-		{
-			if (sh->cd_home)
-				free(sh->cd_home);
-			sh->cd_home = ft_strdup(home);
-			if (!sh->cd_home)
-			{
-				write(2, "minishell: cd: malloc failed\n", 29);
-				sh->exit_status = 1;
-				return (NULL);
-			}
-		}
-		return (sh->cd_home);
-	}
-	if (sh->cd_home)
-		return (sh->cd_home);
-	return (NULL);
+    int idx;
+    if (!key || !env)
+        return NULL;
+    idx = env_get(env, key);
+    if (idx == -1)
+        return NULL;
+    return env[idx] + ft_strlen(key) + 1;
 }
 
-char	*handle_home_dir(t_shell *sh)
+/* Devuelve valor de variable desde shell */
+char *get_var_value(const char *key, t_shell *sh)
 {
-	char	*home;
-
-	home = get_var_value("HOME", sh);
-	return (update_home_cache(sh, home));
+    return get_local_env(key, sh->env);
 }
 
-char	*handle_oldpwd_dir(t_shell *sh)
+/* Gestiona el cache de HOME */
+char *get_home_cached(t_shell *sh)
 {
-	char	*oldpwd;
-
-	oldpwd = get_local_env("OLDPWD", sh->env);
-	if (!oldpwd)
-	{
-		write(2, "minishell: cd: OLDPWD not set\n", 30);
-		sh->exit_status = 1;
-		return (NULL);
-	}
-	return (oldpwd);
+    char *home = get_var_value("HOME", sh);
+    if (!home || home[0] == '\0')
+        return sh->cd_home;
+    if (!sh->cd_home || ft_strcmp(sh->cd_home, home) != 0)
+    {
+        free(sh->cd_home);
+        sh->cd_home = ft_strdup(home);
+        if (!sh->cd_home)
+        {
+            fprintf(stderr, "minishell: cd: malloc failed\n");
+            sh->exit_status = 1;
+            return NULL;
+        }
+    }
+    return sh->cd_home;
 }
 
-char	*update_home_cache(t_shell *sh, char *current)
+/* Determina si el puntero debe liberarse */
+int needs_free(char *arg)
 {
-	if (current && current[0] != '\0')
-	{
-		if (!sh->cd_home || ft_strcmp(current, sh->cd_home) != 0)
-		{
-			if (sh->cd_home)
-				free(sh->cd_home);
-			sh->cd_home = ft_strdup(current);
-			if (!sh->cd_home)
-			{
-				write(2, "minishell: cd: malloc failed\n", 29);
-				sh->exit_status = 1;
-				return (NULL);
-			}
-		}
-		return (sh->cd_home);
-	}
-	if (sh->cd_home)
-		return (sh->cd_home);
-	write(2, "minishell: cd: HOME not set\n", 28);
-	sh->exit_status = 1;
-	return (NULL);
+    if (!arg)
+        return 0;
+    return !(ft_strcmp(arg, "-") == 0 || ft_strcmp(arg, "~") == 0);
 }
 
-void	print_chdir_error(char *path, char *arg)
+/* Imprime errores de cd de forma consistente */
+void print_chdir_error(char *path, char *arg)
 {
-	write(2, "minishell: cd: ", 15);
-	if (arg && !ft_strcmp(arg, "-"))
-		write(2, path, ft_strlen(path));
-	else if (arg && !ft_strcmp(arg, "~"))
-		write(2, path, ft_strlen(path));
-	else if (arg)
-		write(2, arg, ft_strlen(arg));
-	else
-		write(2, "HOME", 4);
-
-	if (errno == EACCES)
-		write(2, ": Permission denied\n", 20);
-	else if (errno == ENOTDIR)
-		write(2, ": Not a directory\n", 18);
-	else
-		write(2, ": No such file or directory\n", 28);
+    fprintf(stderr, "minishell: cd: %s", arg ? arg :
+            "HOME");
+    if (errno == EACCES)
+        fprintf(stderr, ": Permission denied\n");
+    else if (errno == ENOTDIR)
+        fprintf(stderr, ": Not a directory\n");
+    else
+        fprintf(stderr, ": No such file or directory\n");
 }

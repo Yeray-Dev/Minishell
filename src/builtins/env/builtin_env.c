@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+/* Env sin argumentos */
 static void env_handle_no_args(t_shell *sh)
 {
     if (!sh || !sh->env)
@@ -9,11 +10,10 @@ static void env_handle_no_args(t_shell *sh)
     sh->exit_status = 0;
 }
 
+/* Ejecuta env con variables temporales */
 static void env_handle_temp_vars(t_shell *sh, char **args, int start)
 {
-    char **env_copy_local;
-
-    env_copy_local = copy_env(sh->env);
+    char **env_copy_local = copy_env(sh->env);
     if (!env_copy_local)
     {
         sh->exit_status = 1;
@@ -29,9 +29,10 @@ static void env_handle_temp_vars(t_shell *sh, char **args, int start)
     free_dblptr(env_copy_local);
 }
 
+/* Builtin env */
 int builtin_env(t_shell *sh, t_cmd *cmd)
 {
-    int cmd_start;
+    int cmd_start = 1;
 
     if (!sh || !cmd || !cmd->args_name)
     {
@@ -39,8 +40,8 @@ int builtin_env(t_shell *sh, t_cmd *cmd)
             sh->exit_status = 1;
         return 1;
     }
-    cmd_start = 1;
-    while (cmd->args_name[cmd_start] && is_var_assignment(cmd->args_name[cmd_start]))
+    while (cmd->args_name[cmd_start] &&
+           is_var_assignment(cmd->args_name[cmd_start]))
         cmd_start++;
     if (!cmd->args_name[cmd_start])
     {

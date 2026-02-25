@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+/* Duplicar entorno */
 char **copy_env(char **env)
 {
     int i = 0;
@@ -27,6 +28,13 @@ char **copy_env(char **env)
     return new_env;
 }
 
+/* Inicializar entorno al inicio del shell */
+char **env_init(char **envp)
+{
+    return copy_env(envp);
+}
+
+/* Aplica variables temporales antes de ejecutar comando */
 int apply_temp_vars(char **tokens, int end, char ***envp)
 {
     int i;
@@ -42,5 +50,3 @@ int apply_temp_vars(char **tokens, int end, char ***envp)
     }
     return 0;
 }
-
-

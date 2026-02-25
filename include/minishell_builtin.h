@@ -22,10 +22,19 @@ void free_dblptr(char **ptr);
 static char *ft_strjoin3(const char *a, const char *b, const char *c);
 long long atoi_overflow(const char *str, int *error);
 // ---------- FUNCIONES AUXILIARES DE ENTORNO ----------
-char **copy_env(char **env);
-int apply_temp_vars(char **tokens, int end, char ***envp);
-void fork_and_exec(char **tokens, char **envp, int *exit_status);
-void fork_and_exec(char **tokens, char **envp, int *exit_status);
+/* env_init_utils.c */
+char    **copy_env(char **env);
+char    **env_init(char **envp);
+int     apply_temp_vars(char **tokens, int end, char ***envp);
+
+/* env_get_set.c */
+int     env_get(char **env, const char *key);
+int     env_set(char ***env, const char *var);
+int     env_add_empty(char ***env, const char *name);
+
+/* env_path_exec.c */
+char    *get_command_path(char *cmd, char **envp);
+void    fork_and_exec(char **tokens, char **envp, int *exit_status);
 
 // ---------- FUNCIONES EXPORT --------
 static void export_one(t_shell *sh, char *arg, int *has_error);
@@ -34,17 +43,23 @@ static void env_sort(char **env);
 static char **env_copy(char **env);
 
 // ------------ FUNCIONES CD ---------
-char *get_local_env(const char *key, char **env);
-char *get_var_value(const char *key, t_shell *sh);
-int needs_free(char *arg);
-void	print_chdir_error(char *path, char *arg);
-char	*update_home_cache(t_shell *sh, char *current);
-char	*handle_oldpwd_dir(t_shell *sh);
-char	*handle_home_dir(t_shell *sh);
-char	*get_new_pwd(char *oldpwd, char *path, char *arg);
-void update_environment(t_shell *sh, char *oldpwd, char *pwd);
-int change_directory(t_shell *sh, char *path, char *arg);
-char *get_target_path(t_shell *sh, char *arg);
+/* cd_utils.c */
+char    *get_local_env(const char *key, char **env);
+char    *get_var_value(const char *key, t_shell *sh);
+char    *get_home_cached(t_shell *sh);
+int     needs_free(char *arg);
+void    print_chdir_error(char *path, char *arg);
+
+/* cd_path.c */
+char    *get_parent_from_pwd(t_shell *sh);
+char    *build_path_component(char *base, char *component);
+char    *calculate_logical_pwd(char *current, char *path);
+char    *get_new_pwd(char *oldpwd, char *path, char *arg);
+
+/* cd_target.c */
+char    *get_target_path(t_shell *sh, char *arg);
+int     change_directory(t_shell *sh, char *path, char *arg);
+void    update_environment(t_shell *sh, char *oldpwd, char *pwd);
 
 #endif
 
