@@ -9,6 +9,18 @@ typedef enum e_token_type
     TOKEN_REDIRECTIONS
 }token_type;
 
+typedef enum e_builtin_type
+{
+    BI_NONE,
+    BI_ECHO,
+    BI_PWD,
+    BI_CD,
+    BI_EXPORT,
+    BI_UNSET,
+    BI_ENV,
+    BI_EXIT
+} t_builtin_type;
+
 // DEFINE
 
 #define QUOTES 34
@@ -28,7 +40,7 @@ typedef struct s_cmd
     char *outfile;
     char *heredoc_word;
     int is_heredoc; // Definimos si es heredoc. 0 No 1 Si
-    int is_builtins; // Definimos si es builtins. 0 No 1 Si
+    t_builtin_type builtin_type; // Definimos si es builtins. 0 No 1 Si
     int append; // \ != 1 si no sobreescribe 1 si sobreescribe
     int has_pipe; 
 
@@ -71,3 +83,4 @@ typedef struct s_shell
 // GLOBALS
 
 extern volatile sig_atomic_t handler;
+extern int g_status;
