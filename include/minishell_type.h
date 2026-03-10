@@ -64,6 +64,7 @@ typedef struct s_shell
     t_list_cmd cmd_list;
     char **our_envp;
     int last_status;
+    int exit_status;
 
 }t_shell;
 

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/yerayblancodelafuente/Documents/Programacion/42Madrid/Repo_mini/src/parse/lexer",
+      "program": "/Users/yerayblancodelafuente/Documents/Programacion/42Madrid/Repo_mini/src/parse/lexer/build/Debug/outDebug"
+    }
+  ]
+}

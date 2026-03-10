@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <termios.h>
 #include "../Libft/libft.h"
 #include "minishell_type.h"
 #include "minishell_parse.h"

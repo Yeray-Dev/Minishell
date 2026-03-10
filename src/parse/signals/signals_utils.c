@@ -17,6 +17,8 @@ void handler_readline(int sig)
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
+    handler = 1;
+
 }
 void set_signal(int sig, void (*handler)(int))
 {
@@ -24,7 +26,7 @@ void set_signal(int sig, void (*handler)(int))
 
     sa.sa_handler = handler;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
+    sa.sa_flags = 0; //* TRY
 
     sigaction(sig, &sa, NULL);
 }

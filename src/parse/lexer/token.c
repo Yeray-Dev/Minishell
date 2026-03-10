@@ -1,22 +1,37 @@
 #include "minishell.h"
 
-static void token_stract_tokens(char *line, t_list_token *list_token)
+static void token_stract_tokens(char *line, t_list_token *list_token, char **our_envp)
 {
     int i;
+    int j;
     int start;
+    int end;
     char *new_token;
 
     i = 0;
+    j = 0;
     while (line[i] == ' ')
         i++;
     while(line[i] != '\0')
     {
+        j = 0;
         start = i;
-        while ((line[i] != ' ' || (line[i] == ' ' && line[i - 1] == '/')) && line[i] != '\0')
+        while ((line[i] != ' ' || (i > 0 && line[i] == ' ' && line[i - 1] == '/')) && line[i] != '\0')
         {
-            if (line[i] == '$' && line[i - 1] != '/')
-                stract_variables(line, &i);
-            if (token_is_quote(line, &i))
+            if (line[i] == '$' && (i == 0 || line[i - 1] != '/'))
+            {
+                j = stract_variables(line, &i, our_envp, list_token);
+                if (j == 0)
+                {
+                    i++;
+                    break;
+                }
+                if (i > 0)
+                    i--;
+                end = i;
+                break;
+            }
+            if (token_is_quote(line, &i, our_envp, list_token))
                 break;
             if (token_is_pipe(line, &i, &start, list_token) 
                 || token_is_redirect(line, &i, &start, list_token))
@@ -29,14 +44,20 @@ static void token_stract_tokens(char *line, t_list_token *list_token)
             if (line[i] != '\0')
                 i++;
         }
-        i++;
-        if (i - start > 0)
+        end = i;
+        if (line[i] != '\0')
+            i++;
+        if (end - start > 0)
         {
-            new_token = ft_substr(line, start, i - start);
+            new_token = ft_substr(line, start, end - start);
             token_add_list(list_token, new_token);
             free(new_token);
         }
-        list_token->last->type = TOKEN_CMD;
+        i += j;
+        while (line[i] == ' ')
+            i++;
+        if (list_token->last)
+            list_token->last->type = TOKEN_CMD;
     }
 }
 
@@ -51,6 +72,7 @@ void token_add_list(t_list_token *list_token, char* new_token)
         if (!token)
             return;
         token->name = ft_strdup(new_token);
+        printf("TOKEN %s\n", token->name); //! TESTING
         token->next = NULL;
         if (list_token->top == NULL)
         {
@@ -64,17 +86,9 @@ void token_add_list(t_list_token *list_token, char* new_token)
         }
 }
 
-int init_token(char *line, t_list_token *list_token)
+int init_token(char *line, t_list_token *list_token, char **our_envp)
 {
     if (line != NULL)
-        token_stract_tokens(line, list_token);
-        
-    t_tokens *current = list_token->top;
-
-    while(current != NULL)
-    {
-        // printf("%d = %s\n",current->type, current->name);
-        current = current->next;
-    }
+        token_stract_tokens(line, list_token, our_envp);
     return 1;
 }
