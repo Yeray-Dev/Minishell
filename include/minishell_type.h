@@ -1,4 +1,4 @@
-// #include "minishell.h"
+ #include "minishell.h"
 
 // ENUM
 
@@ -8,6 +8,18 @@ typedef enum e_token_type
     TOKEN_PIPE,
     TOKEN_REDIRECTIONS
 }token_type;
+
+typedef enum e_builtin_type
+{
+    BI_NONE,
+    BI_ECHO,
+    BI_PWD,
+    BI_CD,
+    BI_EXPORT,
+    BI_UNSET,
+    BI_ENV,
+    BI_EXIT
+} t_builtin_type;
 
 // DEFINE
 
@@ -28,7 +40,7 @@ typedef struct s_cmd
     char *outfile;
     char *heredoc_word;
     int is_heredoc; // Definimos si es heredoc. 0 No 1 Si
-    int is_builtins; // Definimos si es builtins. 0 No 1 Si
+    t_builtin_type builtin_type; // Definimos si es builtins. 0 No 1 Si
     int append; // \ != 1 si no sobreescribe 1 si sobreescribe
     int has_pipe; 
 
@@ -51,6 +63,30 @@ typedef struct s_tokens
 
 } t_tokens;
 
+typedef struct s_exec_cmd
+{
+	char	*path;
+	char	**argv;
+	int		infile_fd;
+	int		outfile_fd;
+	int		is_builtin;
+	int		builtin_type;
+	t_cmd	*original;   // <-- aquí guardas el puntero al t_cmd original
+	struct s_exec_cmd *next;
+} t_exec_cmd;
+
+typedef struct s_exec
+{
+    int n_cmds;
+    int n_pipes;
+
+    int **pipes;
+    pid_t *pids;
+
+    t_exec_cmd *cmds;
+
+} t_exec;
+
 typedef struct s_list_token
 {
     t_tokens *top;
@@ -65,6 +101,7 @@ typedef struct s_shell
     char **our_envp;
     int last_status;
     int exit_status;
+    char *cd_home;
 
 }t_shell;
 
@@ -72,3 +109,4 @@ typedef struct s_shell
 // GLOBALS
 
 extern volatile sig_atomic_t handler;
+extern int g_status;
