@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+char *ft_strchr(const char *s, int c)
+{
+    if (!s)
+        return NULL;
+
+    while (*s)
+    {
+        if (*s == (char)c)
+            return (char *)s; // casteamos para quitar el const
+        s++;
+    }
+
+    // Comprobar si c es '\0', strchr lo devuelve apuntando al final
+    if (c == '\0')
+        return (char *)s;
+
+    return NULL;
+}
+
 void free_dblptr(char **ptr)
 {
     int i = 0;

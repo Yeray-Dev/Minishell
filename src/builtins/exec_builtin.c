@@ -23,7 +23,7 @@ void detect_builtin(t_cmd *cmd)
         cmd->builtin_type = BI_NONE;
 }
 
-int exec_builtin(t_shell *sh, t_cmd *cmd)
+int exec_builtin(t_shell *sh, t_cmd *cmd) //crear sh en el main
 {
     int status;
 
