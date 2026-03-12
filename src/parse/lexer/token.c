@@ -20,7 +20,7 @@ static void token_stract_tokens(char *line, t_list_token *list_token, char **our
         {
             if (line[i] == '$' && (i == 0 || line[i - 1] != '/'))
             {
-                j = stract_variables(line, &i, our_envp, list_token);
+                j = stract_variables(line, &i, our_envp, list_token->shell);
                 if (j == 0)
                 {
                     i++;
@@ -72,7 +72,7 @@ void token_add_list(t_list_token *list_token, char* new_token)
         if (!token)
             return;
         token->name = ft_strdup(new_token);
-        printf("TOKEN %s\n", token->name); //! TESTING
+        // printf("TOKEN %s\n", token->name); //! TESTING
         token->next = NULL;
         if (list_token->top == NULL)
         {

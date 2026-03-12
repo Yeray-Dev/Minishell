@@ -56,5 +56,6 @@ int		ft_toupper(int c);
 void	ft_burbble_sort(int array_to_sort[], int size);
 int		ft_atoi_base(const char *str, int base);
 char	*ft_strcpy(char *dest, char *src);
+int     ft_strcmp(char *s1, char *s2);
 
 #endif

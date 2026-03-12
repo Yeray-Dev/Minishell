@@ -12,7 +12,7 @@ int token_is_quote(char *line, int *i, char **our_envp, t_list_token *list_token
         while (line[*i] != quote_char && line[*i] != '\0')
         {
             if (quote_char == QUOTES && line[*i] == '$' && line[*i -1] != '/')
-                stract_variables(line, i, our_envp, list_token);
+                stract_variables(line, i, our_envp, list_token->shell);
             (*i)++;
         }
         if (line[*i] == '\0')
@@ -22,8 +22,6 @@ int token_is_quote(char *line, int *i, char **our_envp, t_list_token *list_token
         }
         (*i)++;
         return 1;
-        // if (line[*i] == quote_char)
-        //     (*i)++;
     }
     return 0;
 }

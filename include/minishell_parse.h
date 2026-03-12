@@ -3,7 +3,7 @@
 // FUNCTIONS
 
 // Expander -> expander.c
-int stract_variables(char *line, int *i, char **our_envp, t_list_token *list_token);
+int stract_variables(char *line, int *i, char **our_envp, t_shell *sh);
 char **duplicate_envp(char **envp);
 
 // Lexer -> token.c

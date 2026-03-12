@@ -14,6 +14,8 @@
 #include <termios.h>
 #include <stddef.h>
 #include <sys/wait.h>
+#include <limits.h>
+#include <errno.h>
 #include "../Libft/libft.h"
 #include "minishell_type.h"
 #include "minishell_parse.h"

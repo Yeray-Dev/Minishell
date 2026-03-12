@@ -28,11 +28,11 @@ void	wait_children(t_shell *sh, t_exec *exec)
 	}
 }
 
-static void	cleanup_exec(t_exec *exec)
+void	cleanup_exec(t_exec *exec)
 {
 	t_exec_cmd	*cmd;
 	t_exec_cmd	*tmp;
-	t_exec		**pipes;
+	int			**pipes;
 
 	if (!exec)
 		return ;

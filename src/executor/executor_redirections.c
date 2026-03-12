@@ -48,6 +48,7 @@ static int	redirect_output(char *file, int append)
 
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 {
+	(void)cmd;
 	if (!original)
 		return (0);
 	if (original->infile != NULL)

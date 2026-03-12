@@ -26,7 +26,7 @@ char	*get_local_env(const char *key, char **env)
 
 char	*get_var_value(const char *key, t_shell *sh)
 {
-	return (get_local_env(key, sh->env));
+	return (get_local_env(key, sh->our_envp));
 }
 
 char	*get_home_cached(t_shell *sh)
@@ -61,6 +61,7 @@ int	needs_free(char *arg)
 
 void	print_chdir_error(char *path, char *arg)
 {
+	(void)path;
 	if (arg != NULL)
 		fprintf(stderr, "minishell: cd: %s", arg);
 	else

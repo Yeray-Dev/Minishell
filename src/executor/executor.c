@@ -12,16 +12,14 @@
 
 #include "minishell.h"
 
-#include "minishell.h"
-
 static t_exec	*prepare_exec(t_shell *sh)
 {
 	t_cmd	*first;
 	t_exec	*exec;
 	int		i;
-	t_exec	**pipes;
+	int	**pipes;
 
-	first = sh->cmd_list_top;
+	first = sh->cmd_list.top;
 	if (first && !first->next && first->builtin_type != BI_NONE)
 	{
 		exec_builtin(sh, first);

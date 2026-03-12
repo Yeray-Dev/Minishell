@@ -27,20 +27,29 @@ int expander_variable(char *current_var, char **our_envp, t_list_token *list_tok
     return 0;
 }
 
-int stract_variables(char *line, int *i, char **our_envp, t_list_token *list_token)
+int stract_variables(char *line, int *i, char **our_envp, t_shell *sh)
 {
     char *current_var;
     int end;
     int start;
-
+    
     start = (*i) + 1;
     end = start;
+    if (line[start] == '?')
+    {
+        current_var = ft_itoa(sh->last_status);
+        token_add_list(&sh->list_token, current_var);
+        sh->list_token.last->type = TOKEN_CMD;
+        free(current_var);
+        return (2);
+    }
     while (line[end] && line[end] != ' ' && line[end] != '$'
-            && line[end] != '"' && line[end] != '\'' && line[end] != '/'
-            && line[end] != '|'  && line[end] != '<'  && line[end] != '>' && line[end] != '=')
+        && line[end] != '"' && line[end] != '\'' && line[end] != '/'
+        && line[end] != '|' && line[end] != '<' && line[end] != '>' 
+        && line[end] != '=')
         end++;
     current_var = ft_substr(line, start, end - start);
-    expander_variable(current_var, our_envp, list_token);
+    expander_variable(current_var, our_envp, &sh->list_token);
     free(current_var);
     return (end - (*i));
 }

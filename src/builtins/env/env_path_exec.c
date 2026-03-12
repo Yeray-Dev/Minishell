@@ -71,7 +71,7 @@ char	*get_command_path(char *cmd, char **envp)
 	return (result);
 }
 
-static void	exec_child(char **tokens, char **envp)
+static void	exec_child_bultins(char **tokens, char **envp)
 {
 	char	*path;
 	int		len;
@@ -105,7 +105,7 @@ void	fork_and_exec(char **tokens, char **envp, int *exit_status)
 		return ;
 	}
 	if (pid == 0)
-		exec_child(tokens, envp);
+		exec_child_bultins(tokens, envp);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		*exit_status = WEXITSTATUS(status);

@@ -76,7 +76,7 @@ int	env_add_empty(char ***env, const char *name)
 	char	*tmp;
 	int		ret;
 
-	tmp = ft_strjoin(name, "=");
+	tmp = ft_strjoin((char *)name, "="); //* CORREGIDO tmp = ft_strjoin(name, "=")
 	if (!tmp)
 		return (-1);
 	ret = env_add(env, tmp);

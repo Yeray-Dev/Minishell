@@ -29,11 +29,11 @@ static char	*get_env_path(char **env)
 static char	*build_full_path(char *dir, char *cmd)
 {
 	char	*tmp;
-	char	*full;
 
 	tmp = ft_strjoin(dir, "/");
-	full = ft_strjoin_free(tmp, cmd);
-	return (full);
+	(void)cmd;
+	// full = ft_strjoin_free(tmp, cmd);
+	return (tmp);
 }
 
 static void	free_paths(char **paths)

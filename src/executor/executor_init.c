@@ -44,7 +44,7 @@ t_exec_cmd	*init_exec_cmd(t_cmd *cmd)
 t_exec	*init_exec_struct(t_shell *sh, t_cmd *cmd_list)
 {
 	t_exec	*exec;
-
+	(void)sh;
 	exec = malloc(sizeof(t_exec));
 	exec->n_cmds = count_cmds(cmd_list);
 	exec->n_pipes = exec->n_cmds - 1;
@@ -78,7 +78,7 @@ t_exec	*init_exec(t_shell *sh)
 {
 	t_exec	*exec;
 
-	exec = init_exec_struct(sh, sh->cmd_list_top);
-	build_exec_cmd_list(exec, sh->cmd_list_top);
+	exec = init_exec_struct(sh, sh->cmd_list.top);
+	build_exec_cmd_list(exec, sh->cmd_list.top);
 	return (exec);
 }

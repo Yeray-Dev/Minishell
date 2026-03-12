@@ -24,6 +24,7 @@ void		close_all_pipes_in_parent(t_exec *exec);
 void		exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec);
 void		executor_loop(t_shell *sh, t_exec *exec);
 
+
 /*
 ** WAIT & CLEANUP
 */
@@ -34,3 +35,4 @@ void		free_exec_resources(t_exec *exec);
 ** EXECUTION
 */
 void		execute_commands(t_shell *sh);
+void        cleanup_exec(t_exec *exec);

@@ -91,6 +91,7 @@ typedef struct s_list_token
 {
     t_tokens *top;
     t_tokens *last;
+    struct s_shell *shell;
 
 } t_list_token;
 

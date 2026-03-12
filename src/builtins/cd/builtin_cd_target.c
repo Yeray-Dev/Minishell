@@ -17,7 +17,7 @@ char	*get_target_path(t_shell *sh, char *arg)
 	if (!arg)
 		return (get_home_cached(sh));
 	if (!ft_strcmp(arg, "-"))
-		return (get_local_env("OLDPWD", sh->env));
+		return (get_local_env("OLDPWD", sh->our_envp));
 	if (!ft_strcmp(arg, "~"))
 		return (get_home_cached(sh));
 	if (!ft_strcmp(arg, ".."))
@@ -27,6 +27,7 @@ char	*get_target_path(t_shell *sh, char *arg)
 
 int	change_directory(t_shell *sh, char *path, char *arg)
 {
+	(void)sh;
 	if (chdir(path) < 0)
 	{
 		print_chdir_error(path, arg);
@@ -45,14 +46,14 @@ void	update_environment(t_shell *sh, char *oldpwd, char *pwd)
 	{
 		tmp = ft_strjoin("OLDPWD=", oldpwd);
 		if (tmp)
-			env_set(&sh->env, tmp);
+			env_set(&sh->our_envp, tmp);
 	}
 	if (pwd)
 	{
 		tmp = ft_strjoin("PWD=", pwd);
 		if (tmp)
 		{
-			env_set(&sh->env, tmp);
+			env_set(&sh->our_envp, tmp);
 			free(pwd);
 		}
 	}

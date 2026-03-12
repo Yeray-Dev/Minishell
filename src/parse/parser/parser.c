@@ -20,25 +20,25 @@ int parser(char *line, t_shell *t_shell)
         init_token(line, &t_shell->list_token, t_shell->our_envp);
         create_cmd(&t_shell->list_token, &t_shell->cmd_list);
     }
-    //! TESTING
-t_cmd *cmd = t_shell->cmd_list.top;
-    int cmd_num = 1;
-    while (cmd)
-    {
-        printf("─── CMD %d ───────────────────\n", cmd_num++);
-        int i = 0;
-        printf("  argv     : ");
-        while (cmd->argv[i])
-            printf("[%s] ", cmd->argv[i++]);
-        printf("\n");
-        printf("  has_pipe : %d\n", cmd->has_pipe);
-        printf("  infile   : %s\n", cmd->infile   ? cmd->infile   : "(none)");
-        printf("  outfile  : %s\n", cmd->outfile  ? cmd->outfile  : "(none)");
-        printf("  append   : %d\n", cmd->append);
-        printf("  is_heredoc   : %d\n", cmd->is_heredoc);
-        printf("  heredoc_word : %s\n", cmd->heredoc_word ? cmd->heredoc_word : "(none)");
-        cmd = cmd->next;
-    }
-    //! END TESTING
+//     //! TESTING
+//     t_cmd *cmd = t_shell->cmd_list.top;
+//     int cmd_num = 1;
+//     while (cmd)
+//     {
+//         printf("─── CMD %d ───────────────────\n", cmd_num++);
+//         int i = 0;
+//         printf("  argv     : ");
+//         while (cmd->argv[i])
+//             printf("[%s] ", cmd->argv[i++]);
+//         printf("\n");
+//         printf("  has_pipe : %d\n", cmd->has_pipe);
+//         printf("  infile   : %s\n", cmd->infile   ? cmd->infile   : "(none)");
+//         printf("  outfile  : %s\n", cmd->outfile  ? cmd->outfile  : "(none)");
+//         printf("  append   : %d\n", cmd->append);
+//         printf("  is_heredoc   : %d\n", cmd->is_heredoc);
+//         printf("  heredoc_word : %s\n", cmd->heredoc_word ? cmd->heredoc_word : "(none)");
+//         cmd = cmd->next;
+//     }
+//     //! END TESTING
     return 1;
 }

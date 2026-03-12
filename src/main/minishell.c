@@ -29,6 +29,7 @@ int main (int argc, char **argv, char **envp)
             continue;
         }
         parser(line, &t_shell);
+        execute_commands(&t_shell);
         free_cmd_list(&t_shell.cmd_list);
         free(line);
     }

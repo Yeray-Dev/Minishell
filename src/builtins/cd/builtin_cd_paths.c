@@ -34,7 +34,7 @@ char	*get_parent_from_pwd(t_shell *sh)
 {
 	char	*pwd;
 
-	pwd = get_local_env("PWD", sh->env);
+	pwd = get_local_env("PWD", sh->our_envp);
 	if (!pwd)
 		return (NULL);
 	return (resolve_parent_dir(pwd));
