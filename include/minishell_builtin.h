@@ -1,10 +1,11 @@
-
+#ifndef MINISHELL_BUILTIN_H
+# define MINISHELL_BUILTIN_H
 
 # include "minishell.h"
 //cambiar exit status en todos por last status
 // ---------- DETECTAR Y EJECUTAR BUILTINS ----------
 void    detect_builtin(t_cmd *cmd);
-int exec_builtin(t_shell *sh, t_cmd *cmd)
+int exec_builtin(t_shell *sh, t_cmd *cmd);
 
 
 // ---------- BUILTINS ----------
@@ -18,7 +19,7 @@ void	builtin_cd(t_shell *sh, t_cmd *cmd);
 
 // ---------- AUXILIARS ------------
 void free_dblptr(char **ptr);
-static char *ft_strjoin3(const char *a, const char *b, const char *c);
+char *ft_strjoin3(const char *a, const char *b, const char *c);
 long long atoi_overflow(const char *str, int *error);
 // ---------- FUNCIONES AUXILIARES DE ENTORNO ----------
 /* env_init_utils.c */
@@ -36,10 +37,10 @@ char    *get_command_path(char *cmd, char **envp);
 void    fork_and_exec(char **tokens, char **envp, int *exit_status);
 
 // ---------- FUNCIONES EXPORT --------
-static void export_one(t_shell *sh, char *arg, int *has_error);
-static void print_export(char *var);
-static void env_sort(char **env);
-static char **env_copy(char **env);
+void export_one(t_shell *sh, char *arg, int *has_error);
+void print_export(char *var);
+void env_sort(char **env);
+char **env_copy(char **env);
 
 // ------------ FUNCIONES CD ---------
 /* cd_utils.c */

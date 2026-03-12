@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*   executor_child.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/12 12:39:42 by jugarcia          #+#    #+#             */
-/*   Updated: 2026/03/12 12:39:42 by jugarcia         ###   ########.fr       */
+/*   Created: 2026/03/12 04:42:40 by jugarcia          #+#    #+#             */
+/*   Updated: 2026/03/12 04:42:40 by jugarcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_env(t_shell *sh, t_cmd *cmd)
+void	exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec)
 {
-	int i;
-
-	(void)cmd;
-	if (!sh || !sh->our_envp)
-		return (1);
-
-	i = 0;
-	while (sh->our_envp[i])
+	setup_pipes(exec, i);
+	if (cmd->is_builtin)
 	{
-		printf("%s\n", sh->our_envp[i]);
-		i++;
+		exec_builtin(sh, cmd->original);
+		exit(sh->last_status);
 	}
-
-	sh->last_status = 0;
-	return (0);
+	execve(cmd->path, cmd->argv, sh->our_envp);
+	perror(cmd->argv[0]);
+	exit(127);
 }

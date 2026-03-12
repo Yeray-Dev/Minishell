@@ -1,27 +1,36 @@
-// #include "minishell.h"
+#include "minishell.h"
 
 // FUNCTIONS
+/*
+** EXECUTOR INITIALIZATION
+*/
+int			count_cmds(t_cmd *cmd);
+t_exec_cmd	*init_exec_cmd(t_cmd *cmd);
+t_exec		*init_exec_struct(t_shell *sh, t_cmd *cmd_list);
+void		build_exec_cmd_list(t_exec *exec, t_cmd *cmd_list);
+t_exec		*init_exec(t_shell *sh);
 
-int         count_cmds(t_cmd *cmd);
-int         **create_pipes(int n);
-void        close_all_pipes(int **pipes, int n);
-void        wait_all(int count);
-void        execute(t_cmd *cmds, char **envp);
-void        execute_pipeline(t_cmd *cmds, char **envp);
-void        child_process(t_cmd *cmd, int **pipes, int i, int count, char **envp);
-void        apply_redirections(t_cmd *cmd);
+/*
+** PIPES
+*/
+void		create_pipes(t_exec *exec);
+void		close_pipes(t_exec *exec);
+void		setup_pipes(t_exec *exec, int i);
+void		close_all_pipes_in_parent(t_exec *exec);
 
+/*
+** EXECUTOR LOOP
+*/
+void		exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec);
+void		executor_loop(t_shell *sh, t_exec *exec);
 
-int executor(t_shell *sh, t_cmd *cmd_list, char **envp);
+/*
+** WAIT & CLEANUP
+*/
+void		wait_children(t_shell *sh, t_exec *exec);
+void		free_exec_resources(t_exec *exec);
 
-void launch_children(t_shell *sh, t_cmd *cmd_list, char **envp, int **pipes, int count);
-void wait_and_close(int **pipes, int count, t_shell *sh);
-
-void child_process(t_shell *sh, t_cmd *cmd, int **pipes, int i, int count, char **envp);
-
-int **create_pipes(int count);
-void close_all_pipes(int **pipes, int n);
-
-void apply_redirections(t_cmd *cmd);
-
-int exec_builtin(t_shell *sh, t_cmd *cmd);
+/*
+** EXECUTION
+*/
+void		execute_commands(t_shell *sh);

@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/12 12:39:01 by jugarcia          #+#    #+#             */
+/*   Updated: 2026/03/12 12:39:01 by jugarcia         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
 int	builtin_pwd(t_shell *sh, t_cmd *cmd)
 {
 	char	*cwd;
@@ -8,17 +22,12 @@ int	builtin_pwd(t_shell *sh, t_cmd *cmd)
 	{
 		printf("%s\n", cwd);
 		free(cwd);
-		sh->exit_status = 0;
-	}
-	else if (sh->pwd)
-	{
-		printf("%s\n", sh->pwd);
-		sh->exit_status = 0;
+		sh->last_status = 0;
 	}
 	else
 	{
-		printf("minishell: pwd: error retrieving current directory\n");
-		sh->exit_status = 1;
+		perror("minishell: pwd");
+		sh->last_status = 1;
 	}
-	return (sh->exit_status);
+	return (sh->last_status);
 }

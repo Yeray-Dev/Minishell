@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   auxiliars.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/12 12:41:54 by jugarcia          #+#    #+#             */
+/*   Updated: 2026/03/12 12:41:54 by jugarcia         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
 void free_dblptr(char **ptr)
 {
     int i = 0;
@@ -12,7 +26,7 @@ void free_dblptr(char **ptr)
     free(ptr);
 }
 
-static char *ft_strjoin3(const char *a, const char *b, const char *c)
+char *ft_strjoin3(const char *a, const char *b, const char *c)
 {
     char *res;
     size_t len_a = ft_strlen(a);

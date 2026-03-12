@@ -1,4 +1,4 @@
-// #include "minishell.h"
+ #include "minishell.h"
 
 // ENUM
 
@@ -63,6 +63,30 @@ typedef struct s_tokens
 
 } t_tokens;
 
+typedef struct s_exec_cmd
+{
+	char	*path;
+	char	**argv;
+	int		infile_fd;
+	int		outfile_fd;
+	int		is_builtin;
+	int		builtin_type;
+	t_cmd	*original;   // <-- aquí guardas el puntero al t_cmd original
+	struct s_exec_cmd *next;
+} t_exec_cmd;
+
+typedef struct s_exec
+{
+    int n_cmds;
+    int n_pipes;
+
+    int **pipes;
+    pid_t *pids;
+
+    t_exec_cmd *cmds;
+
+} t_exec;
+
 typedef struct s_list_token
 {
     t_tokens *top;
@@ -76,6 +100,7 @@ typedef struct s_shell
     t_list_cmd cmd_list;
     char **our_envp;
     int last_status;
+    char *cd_home;
 
 }t_shell;
 

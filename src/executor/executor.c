@@ -1,34 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/12 04:34:53 by jugarcia          #+#    #+#             */
+/*   Updated: 2026/03/12 04:34:53 by jugarcia         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*
-Cuenta cuantos comandos hay en la lista del parser.
-Se usa para saber cuantos pipes crear y cuantos forks hacer.
-*/
-static int count_cmds(t_cmd *cmd)
-{
-    int count;
+#include "minishell.h"
 
-    count = 0;
-    while (cmd)
-    {
-        count++;
-        cmd = cmd->next;
-    }
-    return (count);
+static t_exec	*prepare_exec(t_shell *sh)
+{
+	t_cmd	*first;
+	t_exec	*exec;
+	int		i;
+	t_exec	**pipes;
+
+	first = sh->cmd_list_top;
+	if (first && !first->next && first->builtin_type != BI_NONE)
+	{
+		exec_builtin(sh, first);
+		return (NULL);
+	}
+	exec = init_exec(sh);
+	if (!exec)
+		return (NULL);
+	i = 0;
+	pipes = exec->pipes;
+	while (i < exec->n_pipes)
+	{
+		pipes[i] = malloc(sizeof(int) * 2);
+		if (pipe(pipes[i]) < 0)
+			perror("pipe");
+		i++;
+	}
+	return (exec);
 }
 
-/*
-Función principal del executor.
-Crea pipes, lanza procesos hijos y espera su terminación.
-*/
-int executor(t_shell *sh, t_cmd *cmd_list, char **envp)
+void	execute_commands(t_shell *sh)
 {
-    int count;
-    int **pipes;
+	t_exec	*exec;
 
-    count = count_cmds(cmd_list);
-    pipes = create_pipes(count);
-    launch_children(sh, cmd_list, envp, pipes, count);
-    wait_and_close(pipes, count, sh);
-    return (sh->exit_status);
+	exec = prepare_exec(sh);
+	if (!exec)
+		return ;
+	executor_loop(sh, exec);
+	wait_children(sh, exec);
+	cleanup_exec(exec);
 }

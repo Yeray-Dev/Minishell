@@ -11,9 +11,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "../Libft/libft.h"
 #include "minishell_type.h"
 #include "minishell_parse.h"
+#include "minishell_builtin.h"
+#include "minishell_executor.h"
 
 
 //. FUNCTIONS
