@@ -12,21 +12,19 @@
 
 #include "minishell.h"
 
-int builtin_env(t_shell *sh, t_cmd *cmd)
+int	builtin_env(t_shell *sh, t_cmd *cmd)
 {
-	int i;
+	int	i;
 
 	(void)cmd;
 	if (!sh || !sh->our_envp)
 		return (1);
-
 	i = 0;
 	while (sh->our_envp[i])
 	{
 		printf("%s\n", sh->our_envp[i]);
 		i++;
 	}
-
 	sh->last_status = 0;
 	return (0);
 }

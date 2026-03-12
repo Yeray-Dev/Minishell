@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void shift_env_vars(char **env, int pos)
+static void	shift_env_vars(char **env, int pos)
 {
 	while (env[pos + 1])
 	{
@@ -22,41 +22,38 @@ static void shift_env_vars(char **env, int pos)
 	env[pos] = NULL;
 }
 
-static void unset_single_var(char *var_name, char **env)
+static void	unset_single_var(char *var_name, char **env)
 {
-	int j;
-	int len;
+	int	j;
+	int	len;
 
 	j = 0;
 	len = ft_strlen(var_name);
-
 	while (env[j])
 	{
-		if (!ft_strncmp(var_name, env[j], len) &&
-			(env[j][len] == '=' || env[j][len] == '\0'))
+		if (!ft_strncmp(var_name, env[j], len)
+			&& (env[j][len] == '=' || env[j][len] == '\0'))
 		{
 			free(env[j]);
 			shift_env_vars(env, j);
-			break;
+			break ;
 		}
 		j++;
 	}
 }
 
-int builtin_unset(t_shell *sh, t_cmd *cmd)
+int	builtin_unset(t_shell *sh, t_cmd *cmd)
 {
-	int i;
+	int	i;
 
 	if (!sh || !cmd || !cmd->argv)
 		return (1);
-
 	i = 1;
 	while (cmd->argv[i])
 	{
 		unset_single_var(cmd->argv[i], sh->our_envp);
 		i++;
 	}
-
 	sh->last_status = 0;
 	return (0);
 }

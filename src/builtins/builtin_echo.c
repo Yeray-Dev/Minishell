@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-static int is_n_flag(char *arg)
+static int	is_n_flag(char *arg)
 {
-	int i;
+	int	i;
 
 	if (!arg || arg[0] != '-' || arg[1] != 'n')
 		return (0);
@@ -24,20 +24,18 @@ static int is_n_flag(char *arg)
 	return (arg[i] == '\0');
 }
 
-int builtin_echo(t_shell *sh, t_cmd *cmd)
+int	builtin_echo(t_shell *sh, t_cmd *cmd)
 {
-	int i;
-	int print_newline;
+	int	i;
+	int	print_newline;
 
 	i = 1;
 	print_newline = 1;
-
 	while (cmd->argv[i] && is_n_flag(cmd->argv[i]))
 	{
 		print_newline = 0;
 		i++;
 	}
-
 	while (cmd->argv[i])
 	{
 		printf("%s", cmd->argv[i]);
@@ -45,10 +43,8 @@ int builtin_echo(t_shell *sh, t_cmd *cmd)
 			printf(" ");
 		i++;
 	}
-
 	if (print_newline)
 		printf("\n");
-
 	sh->last_status = 0;
 	return (sh->last_status);
 }
