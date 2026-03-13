@@ -46,5 +46,5 @@ char	*resolve_path(char *cmd, char **env);
 /*
 ** REDIRECTIONS
 */
-
+void handle_heredocs(t_list_cmd *cmd_list);
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original);

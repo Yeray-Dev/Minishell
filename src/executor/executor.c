@@ -33,7 +33,7 @@ static t_exec	*prepare_exec(t_shell *sh)
 void execute_commands(t_shell *sh)
 {
     t_exec *exec;
-
+	handle_heredocs(&sh->cmd_list);
     exec = prepare_exec(sh);      // crea pipes
     if (!exec)
         return;

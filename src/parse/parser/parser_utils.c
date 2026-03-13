@@ -34,6 +34,8 @@ void free_cmd_list(t_list_cmd *list_cmd)
          free(cmd->outfile);
         if (cmd->heredoc_word) 
          free(cmd->heredoc_word);
+         if (cmd->heredoc_fd != -1)
+             close(cmd->heredoc_fd);
         free(cmd);
         cmd = next; 
     }
@@ -91,6 +93,7 @@ void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
         current_cmd = ft_calloc(1, sizeof(t_cmd));
         if (!current_cmd)
             return ;
+        current_cmd->heredoc_fd = -1;
         i = 0;
         current_cmd->argv = malloc(sizeof(char *) * (count_tokes(s_list_token) + 1));
         if(!current_cmd->argv)

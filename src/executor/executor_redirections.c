@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "minishell.h"
 
 static int	redirect_input(char *file)
 {
@@ -46,47 +45,64 @@ static int	redirect_output(char *file, int append)
 	return (0);
 }
 
+void handle_heredocs(t_list_cmd *cmd_list)
+{
+	t_cmd *cmd;
+	char *line;
+	int hd_pipe[2];
+
+	cmd = cmd_list->top;
+	while (cmd)
+	{
+		if (cmd->is_heredoc && cmd->heredoc_word)
+		{
+			if (pipe(hd_pipe) < 0)
+			{
+				perror("pipe");
+				cmd = cmd->next;
+				continue ;
+			}
+			while (1)
+			{
+				line = readline("> ");
+				if (!line || ft_strcmp(line, cmd->heredoc_word) == 0)
+				{
+					free(line);
+					break ;
+				}
+				write(hd_pipe[1], line, ft_strlen(line));
+                write(hd_pipe[1], "\n", 1);
+                free(line);
+			}
+			close(hd_pipe[1]);
+			cmd->heredoc_fd = hd_pipe[0];
+		}
+		cmd = cmd->next;
+	}
+	
+}
+
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 {
 	(void)cmd;
 	if (!original)
 		return (0);
 
-	// Redirección de entrada desde archivo
 	if (original->infile)
 	{
 		if (redirect_input(original->infile) < 0)
 			return (1);
 	}
-
-	// Redirección de entrada desde heredoc
-	if (original->is_heredoc && original->heredoc_word)
+	if (original->is_heredoc && original->heredoc_fd != -1)
 	{
-		int hd_pipe[2];
-
-		if (pipe(hd_pipe) < 0)
-		{
-			perror("pipe");
-			return (1);
-		}
-
-		// Escribir el contenido del heredoc en el pipe
-		write(hd_pipe[1], original->heredoc_word, strlen(original->heredoc_word));
-		write(hd_pipe[1], "\n", 1); // salto de línea final
-		close(hd_pipe[1]);
-
-		// Redirigir stdin del child al pipe del heredoc
-		dup2(hd_pipe[0], STDIN_FILENO);
-		close(hd_pipe[0]);
+		dup2(original->heredoc_fd, STDIN_FILENO);
+		close(original->heredoc_fd);
 	}
-
-	// Redirección de salida
 	if (original->outfile)
 	{
 		if (redirect_output(original->outfile, original->append) < 0)
 			return (1);
 	}
-
 	return (0);
 }
 

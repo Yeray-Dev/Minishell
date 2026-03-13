@@ -72,7 +72,6 @@ void token_add_list(t_list_token *list_token, char* new_token)
         if (!token)
             return;
         token->name = ft_strdup(new_token);
-        // printf("TOKEN %s\n", token->name); //! TESTING
         token->next = NULL;
         if (list_token->top == NULL)
         {

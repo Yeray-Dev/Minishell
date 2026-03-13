@@ -39,9 +39,10 @@ typedef struct s_cmd
     char *infile; 
     char *outfile;
     char *heredoc_word;
-    int is_heredoc; // Definimos si es heredoc. 0 No 1 Si
-    t_builtin_type builtin_type; // Definimos si es builtins. 0 No 1 Si
-    int append; // \ != 1 si no sobreescribe 1 si sobreescribe
+    int is_heredoc;
+    int heredoc_fd;
+    t_builtin_type builtin_type;
+    int append;
     int has_pipe; 
 
     struct s_cmd *next;
