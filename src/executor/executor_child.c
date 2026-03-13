@@ -14,6 +14,7 @@
 
 void	exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec)
 {
+	set_signal(SIGQUIT, SIG_DFL);
 	setup_pipes(exec, i);
 
 	if (apply_redirections(cmd, cmd->original))
