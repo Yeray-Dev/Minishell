@@ -51,15 +51,42 @@ int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 	(void)cmd;
 	if (!original)
 		return (0);
-	if (original->infile != NULL)
+
+	// Redirección de entrada desde archivo
+	if (original->infile)
 	{
 		if (redirect_input(original->infile) < 0)
 			return (1);
 	}
-	if (original->outfile != NULL)
+
+	// Redirección de entrada desde heredoc
+	if (original->is_heredoc && original->heredoc_word)
+	{
+		int hd_pipe[2];
+
+		if (pipe(hd_pipe) < 0)
+		{
+			perror("pipe");
+			return (1);
+		}
+
+		// Escribir el contenido del heredoc en el pipe
+		write(hd_pipe[1], original->heredoc_word, strlen(original->heredoc_word));
+		write(hd_pipe[1], "\n", 1); // salto de línea final
+		close(hd_pipe[1]);
+
+		// Redirigir stdin del child al pipe del heredoc
+		dup2(hd_pipe[0], STDIN_FILENO);
+		close(hd_pipe[0]);
+	}
+
+	// Redirección de salida
+	if (original->outfile)
 	{
 		if (redirect_output(original->outfile, original->append) < 0)
 			return (1);
 	}
+
 	return (0);
 }
+

@@ -36,3 +36,15 @@ void		free_exec_resources(t_exec *exec);
 */
 void		execute_commands(t_shell *sh);
 void        cleanup_exec(t_exec *exec);
+
+/*
+** PATH
+*/
+
+char	*resolve_path(char *cmd, char **env);
+
+/*
+** REDIRECTIONS
+*/
+
+int	apply_redirections(t_exec_cmd *cmd, t_cmd *original);

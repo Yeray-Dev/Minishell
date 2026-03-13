@@ -40,14 +40,16 @@ static t_exec	*prepare_exec(t_shell *sh)
 	return (exec);
 }
 
-void	execute_commands(t_shell *sh)
+void execute_commands(t_shell *sh)
 {
-	t_exec	*exec;
+    t_exec *exec;
 
-	exec = prepare_exec(sh);
-	if (!exec)
-		return ;
-	executor_loop(sh, exec);
-	wait_children(sh, exec);
-	cleanup_exec(exec);
+    exec = prepare_exec(sh);      // crea pipes
+    if (!exec)
+        return;
+
+    executor_loop(sh, exec);      // fork + exec_child
+    close_all_pipes_in_parent(exec); // cierra pipes en padre
+    wait_children(sh, exec);      // espera a todos los hijos
+    cleanup_exec(exec);
 }
