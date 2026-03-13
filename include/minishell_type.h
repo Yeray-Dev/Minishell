@@ -110,4 +110,3 @@ typedef struct s_shell
 // GLOBALS
 
 extern volatile sig_atomic_t handler;
-extern int g_status;

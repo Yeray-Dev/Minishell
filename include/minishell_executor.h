@@ -6,7 +6,7 @@
 */
 int			count_cmds(t_cmd *cmd);
 t_exec_cmd	*init_exec_cmd(t_cmd *cmd);
-t_exec		*init_exec_struct(t_shell *sh, t_cmd *cmd_list);
+t_exec		*init_exec_struct(t_cmd *cmd_list);
 void		build_exec_cmd_list(t_exec *exec, t_cmd *cmd_list);
 t_exec		*init_exec(t_shell *sh);
 

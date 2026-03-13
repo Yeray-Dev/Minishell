@@ -1,7 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-
 //. HEADS
 
 #include <readline/readline.h>
@@ -21,9 +20,6 @@
 #include "minishell_parse.h"
 #include "minishell_builtin.h"
 #include "minishell_executor.h"
-
-
-//. FUNCTIONS
 
 #endif
 

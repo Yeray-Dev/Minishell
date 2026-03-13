@@ -39,11 +39,7 @@ void	cleanup_exec(t_exec *exec)
 	pipes = exec->pipes;
 	cmd = exec->cmds;
 	while (exec->n_pipes-- > 0)
-	{
-		close(pipes[exec->n_pipes][0]);
-		close(pipes[exec->n_pipes][1]);
 		free(pipes[exec->n_pipes]);
-	}
 	free(pipes);
 	free(exec->pids);
 	while (cmd)

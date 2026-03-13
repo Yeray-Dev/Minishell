@@ -16,8 +16,6 @@ static t_exec	*prepare_exec(t_shell *sh)
 {
 	t_cmd	*first;
 	t_exec	*exec;
-	int		i;
-	int	**pipes;
 
 	first = sh->cmd_list.top;
 	if (first && !first->next && first->builtin_type != BI_NONE)
@@ -28,15 +26,7 @@ static t_exec	*prepare_exec(t_shell *sh)
 	exec = init_exec(sh);
 	if (!exec)
 		return (NULL);
-	i = 0;
-	pipes = exec->pipes;
-	while (i < exec->n_pipes)
-	{
-		pipes[i] = malloc(sizeof(int) * 2);
-		if (pipe(pipes[i]) < 0)
-			perror("pipe");
-		i++;
-	}
+	create_pipes(exec);
 	return (exec);
 }
 
