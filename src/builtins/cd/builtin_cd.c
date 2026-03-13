@@ -26,19 +26,31 @@ static int	check_multiple_args(t_cmd *cmd, t_shell *sh)
 int	builtin_cd(t_shell *sh, t_cmd *cmd)
 {
 	char	*path;
+	char    *oldpwd;
+    char    *newpwd;
 
 	if (check_multiple_args(cmd, sh))
 		return (1);
 	if (!cmd->argv[1])
-		path = getenv("HOME");
+	{
+		path = get_local_env("HOME", sh->our_envp);
+		if (!path)
+		{
+			fprintf(stderr, "minishell: cd: HOME not set\n");
+			return 1;
+		}
+	}
 	else
 		path = cmd->argv[1];
+	oldpwd = get_local_env("PWD", sh->our_envp);	
 	if (chdir(path) != 0)
 	{
 		perror("minishell: cd");
 		sh->last_status = 1;
 		return (1);
 	}
+	newpwd = getcwd(NULL, 0);
+    update_environment(sh, oldpwd, newpwd);
 	sh->last_status = 0;
 	return (0);
 }

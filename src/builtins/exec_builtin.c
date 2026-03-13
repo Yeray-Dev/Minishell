@@ -62,7 +62,6 @@ int	exec_builtin(t_shell *sh, t_cmd *cmd)
 
 	if (!cmd || !sh)
 		return (1);
-	detect_builtin(cmd);
 	status = exec_builtin_helper(sh, cmd);
 	sh->last_status = status;
 	return (status);
