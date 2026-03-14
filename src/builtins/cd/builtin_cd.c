@@ -23,6 +23,24 @@ static int	check_multiple_args(t_cmd *cmd, t_shell *sh)
 	return (0);
 }
 
+static char	*resolve_cd_path(t_shell *sh, t_cmd *cmd)
+{
+	char	*path;
+
+	if (!cmd->argv[1])
+	{
+		path = get_local_env("HOME", sh->our_envp);
+		if (!path)
+		{
+			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+			return (NULL);
+		}
+	}
+	else
+		path = cmd->argv[1];
+	return (path);
+}
+
 int	builtin_cd(t_shell *sh, t_cmd *cmd)
 {
 	char	*path;
@@ -31,17 +49,9 @@ int	builtin_cd(t_shell *sh, t_cmd *cmd)
 
 	if (check_multiple_args(cmd, sh))
 		return (1);
-	if (!cmd->argv[1])
-	{
-		path = get_local_env("HOME", sh->our_envp);
-		if (!path)
-		{
-			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-			return (1);
-		}
-	}
-	else
-		path = cmd->argv[1];
+	path = resolve_cd_path(sh, cmd);
+	if (!path)
+		return (1);
 	oldpwd = get_local_env("PWD", sh->our_envp);
 	if (chdir(path) != 0)
 	{
