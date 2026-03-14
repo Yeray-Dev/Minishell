@@ -31,9 +31,7 @@ t_exec_cmd	*init_exec_cmd(t_cmd *cmd)
 
 	new = malloc(sizeof(t_exec_cmd));
 	if (!new)
-	{
 		return (NULL);
-	}
 	new->argv = cmd->argv;
 	new->path = cmd->path;
 	new->infile_fd = -1;
@@ -48,6 +46,7 @@ t_exec_cmd	*init_exec_cmd(t_cmd *cmd)
 t_exec	*init_exec_struct(t_cmd *cmd_list)
 {
 	t_exec	*exec;
+
 	exec = malloc(sizeof(t_exec));
 	if (!exec)
 		return (NULL);
@@ -60,16 +59,6 @@ t_exec	*init_exec_struct(t_cmd *cmd_list)
 		return (NULL);
 	}
 	exec->pipes = NULL;
-	if (exec->n_pipes > 0)
-	{
-		exec->pipes = malloc(sizeof(int *) * exec->n_pipes);
-		if (!exec->pipes)
-		{
-			free(exec->pids);
-			free(exec);
-			return (NULL);
-		}
-	}
 	exec->cmds = NULL;
 	return (exec);
 }
@@ -97,6 +86,18 @@ t_exec	*init_exec(t_shell *sh)
 	t_exec	*exec;
 
 	exec = init_exec_struct(sh->cmd_list.top);
+	if (!exec)
+		return (NULL);
+	if (exec->n_pipes > 0)
+	{
+		exec->pipes = malloc(sizeof(int *) * exec->n_pipes);
+		if (!exec->pipes)
+		{
+			free(exec->pids);
+			free(exec);
+			return (NULL);
+		}
+	}
 	build_exec_cmd_list(exec, sh->cmd_list.top);
 	return (exec);
 }

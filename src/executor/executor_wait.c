@@ -12,28 +12,28 @@
 
 #include "minishell.h"
 
-void wait_children(t_shell *sh, t_exec *exec)
+void	wait_children(t_shell *sh, t_exec *exec)
 {
-    int i;
-    int status;
+	int	i;
+	int	status;
 
-    i = 0;
-    while (i < exec->n_cmds)
-    {
-        status = 0;
-        waitpid(exec->pids[i], &status, 0);
-        if (WIFEXITED(status))
-            sh->last_status = WEXITSTATUS(status);
-        else if (WIFSIGNALED(status))
-        {
-            sh->last_status = 128 + WTERMSIG(status);
-            if (WTERMSIG(status) == SIGQUIT)
-                write(2, "Quit (core dumped)\n", 19);
-            else if (WTERMSIG(status) == SIGINT)
-                write(2, "\n", 1);
-        }
-        i++;
-    }
+	i = 0;
+	while (i < exec->n_cmds)
+	{
+		status = 0;
+		waitpid(exec->pids[i], &status, 0);
+		if (WIFEXITED(status))
+			sh->last_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			sh->last_status = 128 + WTERMSIG(status);
+			if (WTERMSIG(status) == SIGQUIT)
+				write(2, "Quit (core dumped)\n", 19);
+			else if (WTERMSIG(status) == SIGINT)
+				write(2, "\n", 1);
+		}
+		i++;
+	}
 }
 
 void	cleanup_exec(t_exec *exec)

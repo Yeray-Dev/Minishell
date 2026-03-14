@@ -30,16 +30,16 @@ static t_exec	*prepare_exec(t_shell *sh)
 	return (exec);
 }
 
-void execute_commands(t_shell *sh)
+void	execute_commands(t_shell *sh)
 {
-    t_exec *exec;
-	handle_heredocs(&sh->cmd_list);
-    exec = prepare_exec(sh);      // crea pipes
-    if (!exec)
-        return;
+	t_exec	*exec;
 
-    executor_loop(sh, exec);      // fork + exec_child
-    close_all_pipes_in_parent(exec); // cierra pipes en padre
-    wait_children(sh, exec);      // espera a todos los hijos
-    cleanup_exec(exec);
+	handle_heredocs(&sh->cmd_list);
+	exec = prepare_exec(sh);
+	if (!exec)
+		return ;
+	executor_loop(sh, exec);
+	close_all_pipes_in_parent(exec);
+	wait_children(sh, exec);
+	cleanup_exec(exec);
 }

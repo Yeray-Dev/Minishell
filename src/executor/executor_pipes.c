@@ -41,28 +41,21 @@ void	close_pipes(t_exec *exec)
 	}
 }
 
-void setup_pipes(t_exec *exec, int i)
+void	setup_pipes(t_exec *exec, int i)
 {
-    // stdin del child
-    if (i > 0)
-    {
-        dup2(exec->pipes[i - 1][0], STDIN_FILENO);
-    }
+	int	j;
 
-    // stdout del child
-    if (i < exec->n_cmds - 1)
-    {
-        dup2(exec->pipes[i][1], STDOUT_FILENO);
-    }
-
-    // cerrar todos los pipes que no se usan
-    int j = 0;
-    while (j < exec->n_pipes)
-    {
-        close(exec->pipes[j][0]);
-        close(exec->pipes[j][1]);
-        j++;
-    }
+	if (i > 0)
+		dup2(exec->pipes[i - 1][0], STDIN_FILENO);
+	if (i < exec->n_cmds - 1)
+		dup2(exec->pipes[i][1], STDOUT_FILENO);
+	j = 0;
+	while (j < exec->n_pipes)
+	{
+		close(exec->pipes[j][0]);
+		close(exec->pipes[j][1]);
+		j++;
+	}
 }
 
 void	close_all_pipes_in_parent(t_exec *exec)

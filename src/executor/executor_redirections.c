@@ -31,7 +31,7 @@ static int	redirect_output(char *file, int append)
 {
 	int	fd;
 
-	if (append != 0)
+	if (append)
 		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -45,11 +45,28 @@ static int	redirect_output(char *file, int append)
 	return (0);
 }
 
-void handle_heredocs(t_list_cmd *cmd_list)
+static void	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
 {
-	t_cmd *cmd;
-	char *line;
-	int hd_pipe[2];
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, cmd->heredoc_word) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(hd_pipe[1], line, ft_strlen(line));
+		write(hd_pipe[1], "\n", 1);
+		free(line);
+	}
+}
+
+void	handle_heredocs(t_list_cmd *cmd_list)
+{
+	t_cmd	*cmd;
+	int		hd_pipe[2];
 
 	cmd = cmd_list->top;
 	while (cmd)
@@ -62,24 +79,12 @@ void handle_heredocs(t_list_cmd *cmd_list)
 				cmd = cmd->next;
 				continue ;
 			}
-			while (1)
-			{
-				line = readline("> ");
-				if (!line || ft_strcmp(line, cmd->heredoc_word) == 0)
-				{
-					free(line);
-					break ;
-				}
-				write(hd_pipe[1], line, ft_strlen(line));
-                write(hd_pipe[1], "\n", 1);
-                free(line);
-			}
+			read_heredoc_loop(cmd, hd_pipe);
 			close(hd_pipe[1]);
 			cmd->heredoc_fd = hd_pipe[0];
 		}
 		cmd = cmd->next;
 	}
-	
 }
 
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
@@ -87,7 +92,6 @@ int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 	(void)cmd;
 	if (!original)
 		return (0);
-
 	if (original->infile)
 	{
 		if (redirect_input(original->infile) < 0)
@@ -105,4 +109,3 @@ int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 	}
 	return (0);
 }
-
