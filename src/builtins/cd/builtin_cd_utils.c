@@ -42,7 +42,7 @@ char	*get_home_cached(t_shell *sh)
 		sh->cd_home = ft_strdup(home);
 		if (!sh->cd_home)
 		{
-			fprintf(stderr, "minishell: cd: malloc failed\n");
+			ft_putstr_fd("minishell: cd: malloc failed\n", 2);
 			sh->exit_status = 1;
 			return (NULL);
 		}
@@ -63,13 +63,16 @@ void	print_chdir_error(char *path, char *arg)
 {
 	(void)path;
 	if (arg != NULL)
-		fprintf(stderr, "minishell: cd: %s", arg);
+	{
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(arg, 2);
+	}
 	else
-		fprintf(stderr, "minishell: cd: HOME");
+		ft_putstr_fd("minishell: cd: HOME", 2);
 	if (errno == EACCES)
-		fprintf(stderr, ": Permission denied\n");
+		ft_putstr_fd(": Permission denied\n", 2);
 	else if (errno == ENOTDIR)
-		fprintf(stderr, ": Not a directory\n");
+		ft_putstr_fd(": Not a directory\n", 2);
 	else
-		fprintf(stderr, ": No such file or directory\n");
+		ft_putstr_fd(": No such file or directory\n", 2);
 }

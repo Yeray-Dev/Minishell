@@ -19,9 +19,9 @@ void	export_one(t_shell *sh, char *arg, int *has_error)
 
 	if (!is_valid_identifier(arg))
 	{
-		fprintf(stderr, "minishell: export: `");
-		fprintf(stderr, "%s", arg);
-		fprintf(stderr, "': not a valid identifier\n");
+		ft_putstr_fd("minishell: export: `", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
 		*has_error = 1;
 		return ;
 	}
