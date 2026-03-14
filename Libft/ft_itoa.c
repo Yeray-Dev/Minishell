@@ -40,7 +40,10 @@ char	*ft_itoa(int n)
 	if ((long int)n <= 0)
 		count++;
 	while ((new_n != 0))
+	{
 		new_n = new_n / 10;
+		count ++;
+	}
 	number = ft_calloc(count + 1, sizeof(char));
 	if (number == NULL)
 		return (NULL);

@@ -116,6 +116,7 @@ void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
             if (s_list_token->top != NULL)
                 s_list_token->top = s_list_token->top->next;
         }
+        
         detect_builtin(current_cmd);
         add_cmd_list(current_cmd, list_cmd);
     }
