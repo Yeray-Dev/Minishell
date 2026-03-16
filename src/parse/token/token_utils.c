@@ -8,11 +8,13 @@ int token_is_quote(char *line, int *i, char **our_envp, t_list_token *list_token
     {
         quote_char = line[*i];
         (*i)++;
-
         while (line[*i] != quote_char && line[*i] != '\0')
         {
-            if (quote_char == QUOTES && line[*i] == '$' && line[*i -1] != '/')
-                stract_variables(line, i, our_envp, list_token->shell);
+            if (quote_char == QUOTES && line[*i] == '$' && line[*i - 1] != '/')
+            {
+                *i += stract_variables(line, i, our_envp, list_token->shell);
+                continue;
+            }
             (*i)++;
         }
         if (line[*i] == '\0')
@@ -92,3 +94,4 @@ int token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
     }
     return (0);
 }
+

@@ -1,15 +1,17 @@
 #include "minishell.h"
 
-void handler_sigint(int sig) //- Ctrl + C
+void handler_sigint(int sig)
 {
     (void)sig;
     handler = 2;
 }
-void handler_sigquit(int sig)  //- Ctrl + \ => Core Dump
+
+void handler_sigquit(int sig)
 {
     (void)sig;
     handler = 3;
 }
+
 void handler_readline(int sig)
 {
     (void)sig;
@@ -20,6 +22,7 @@ void handler_readline(int sig)
     handler = 1;
 
 }
+
 void set_signal(int sig, void (*handler)(int))
 {
     struct sigaction sa;

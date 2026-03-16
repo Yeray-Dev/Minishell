@@ -17,6 +17,7 @@ void token_is_double_redirect(char *line, int *i, int *start, t_list_token *list
 int token_is_redirect(char *line, int *i, int *start, t_list_token *list_token);
 
 // Parser -> parser.c
+void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);
 void complete_cmd(t_cmd *new_cmd, t_list_cmd *list_cmd, t_tokens **token);
 int parser(char *line, t_shell *t_shell);
 
@@ -25,7 +26,7 @@ size_t count_tokes(t_list_token *s_list_token);
 void free_cmd_list(t_list_cmd *list_cmd);
 void set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token);
 void add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd);
-void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);
+void create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd);
 
 // Signals -> Signal.c
 void init_signals(void);

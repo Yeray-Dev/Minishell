@@ -7,6 +7,7 @@ static void token_stract_tokens(char *line, t_list_token *list_token, char **our
     int start;
     int end;
     char *new_token;
+    
 
     i = 0;
     j = 0;
@@ -32,7 +33,12 @@ static void token_stract_tokens(char *line, t_list_token *list_token, char **our
                 break;
             }
             if (token_is_quote(line, &i, our_envp, list_token))
+            {
+                start ++;
+                i = i - 1;
+                start = i;
                 break;
+            }
             if (token_is_pipe(line, &i, &start, list_token) 
                 || token_is_redirect(line, &i, &start, list_token))
             {
@@ -49,6 +55,7 @@ static void token_stract_tokens(char *line, t_list_token *list_token, char **our
             i++;
         if (end - start > 0)
         {
+             printf("start=%d end=%d substr='%.*s'\n", start, end, end - start, line + start);
             new_token = ft_substr(line, start, end - start);
             token_add_list(list_token, new_token);
             free(new_token);
