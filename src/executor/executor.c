@@ -1,55 +1,47 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   executor.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/12 04:34:53 by jugarcia          #+#    #+#             */
-/*   Updated: 2026/03/12 04:34:53 by jugarcia         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
-#include "minishell.h"
-
-static t_exec	*prepare_exec(t_shell *sh)
+static t_exec *prepare_exec(t_shell *sh)
 {
-	t_cmd	*first;
-	t_exec	*exec;
-	int		i;
-	t_exec	**pipes;
+    t_cmd *first;
+    t_exec *exec;
 
-	first = sh->cmd_list_top;
-	if (first && !first->next && first->builtin_type != BI_NONE)
-	{
-		exec_builtin(sh, first);
-		return (NULL);
-	}
-	exec = init_exec(sh);
-	if (!exec)
-		return (NULL);
-	i = 0;
-	pipes = exec->pipes;
-	while (i < exec->n_pipes)
-	{
-		pipes[i] = malloc(sizeof(int) * 2);
-		if (pipe(pipes[i]) < 0)
-			perror("pipe");
-		i++;
-	}
-	return (exec);
+    first = sh->cmd_list.top;
+    if (first && !first->next && first->builtin_type != BI_NONE)
+    {
+        int save_stdin = dup(STDIN_FILENO);
+        int save_stdout = dup(STDOUT_FILENO);
+        t_exec_cmd tmp;
+
+        tmp.original = first;
+
+        if (!apply_redirections(&tmp, first))
+            exec_builtin(sh, first);
+
+        dup2(save_stdin, STDIN_FILENO);
+        dup2(save_stdout, STDOUT_FILENO);
+
+        close(save_stdin);
+        close(save_stdout);
+        return (NULL);
+    }
+
+    exec = init_exec(sh);
+    if (!exec)
+        return (NULL);
+
+    create_pipes(exec);
+    return (exec);
 }
-
 void	execute_commands(t_shell *sh)
 {
 	t_exec	*exec;
 
+	handle_heredocs(&sh->cmd_list);
 	exec = prepare_exec(sh);
 	if (!exec)
 		return ;
 	executor_loop(sh, exec);
+	close_all_pipes_in_parent(exec);
 	wait_children(sh, exec);
 	cleanup_exec(exec);
 }
