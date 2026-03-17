@@ -50,7 +50,8 @@ int	parser(char *line, t_shell *t_shell)
 	else
 	{
 		add_history(line);
-		init_token(line, &t_shell->list_token, t_shell->our_envp);
+		init_token(line, &t_shell->list_token);
+		expand_token_list(&t_shell->list_token, t_shell);
 		create_cmd(&t_shell->list_token, &t_shell->cmd_list);
 	}
 	return (1);

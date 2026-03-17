@@ -59,10 +59,25 @@ static int	exec_builtin_helper(t_shell *sh, t_cmd *cmd)
 int	exec_builtin(t_shell *sh, t_cmd *cmd)
 {
 	int	status;
+	int	saved_stdin;
+	int	saved_stdout;
 
 	if (!cmd || !sh)
 		return (1);
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (apply_redirections(NULL, cmd) != 0)
+	{
+		close(saved_stdin);
+		close(saved_stdout);
+		sh->last_status = 1;
+		return (1);
+	}
 	status = exec_builtin_helper(sh, cmd);
 	sh->last_status = status;
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 	return (status);
 }

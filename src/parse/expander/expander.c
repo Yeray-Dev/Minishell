@@ -1,60 +1,139 @@
 #include "minishell.h"
 
-int	expander_variable(char *current_var, char **our_envp,
-	t_list_token *list_token)
+static char	*str_join_free(char *s1, char *s2)
 {
-	int		i;
-	size_t	len;
-	size_t	len_envp;
-	char	*new_token;
+	char	*result;
 
-	i = 0;
-	len = ft_strlen(current_var);
-	while (our_envp[i])
-	{
-		if (len < ft_strlen(our_envp[i]) && our_envp[i][len] == '=')
-		{
-			if (ft_strncmp(our_envp[i], current_var, len) == 0)
-			{
-				len_envp = ft_strlen(our_envp[i]);
-				new_token = ft_substr(our_envp[i], len + 1,
-						(len_envp - len - 1));
-				token_add_list(list_token, new_token);
-				free(new_token);
-				list_token->last->type = TOKEN_CMD;
-				break ;
-			}
-		}
-		i++;
-	}
-	return (0);
+	result = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (result);
 }
 
-int	stract_variables(char *line, int *i, char **our_envp, t_shell *sh)
+static char	*str_append_char(char *s, char c)
 {
-	char	*current_var;
-	int		end;
-	int		start;
+	char	buf[2];
 
-	start = (*i) + 1;
-	end = start;
-	if (line[start] == '?')
+	buf[0] = c;
+	buf[1] = '\0';
+	return (str_join_free(s, ft_strdup(buf)));
+}
+
+static char	*get_env_value(char *name, char **envp, int status)
+{
+	size_t	len;
+	int		i;
+
+	if (!name || !name[0])
+		return (ft_strdup(""));
+	if (name[0] == '?' && !name[1])
+		return (ft_itoa(status));
+	len = ft_strlen(name);
+	i = -1;
+	while (envp[++i])
+		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+			return (ft_strdup(envp[i] + len + 1));
+	return (ft_strdup(""));
+}
+
+static char	*expand_var(char *raw, int *i, t_shell *sh)
+{
+	int		start;
+	char	*name;
+	char	*val;
+
+	(*i)++;
+	if (raw[*i] == '?')
 	{
-		current_var = ft_itoa(sh->last_status);
-		token_add_list(&sh->list_token, current_var);
-		sh->list_token.last->type = TOKEN_CMD;
-		free(current_var);
-		return (2);
+		(*i)++;
+		return (ft_itoa(sh->last_status));
 	}
-	while (line[end] && line[end] != ' ' && line[end] != '$'
-		&& line[end] != '"' && line[end] != '\'' && line[end] != '/'
-		&& line[end] != '|' && line[end] != '<' && line[end] != '>'
-		&& line[end] != '=')
-		end++;
-	current_var = ft_substr(line, start, end - start);
-	expander_variable(current_var, our_envp, &sh->list_token);
-	free(current_var);
-	return (end - (*i));
+	start = *i;
+	while (raw[*i] && raw[*i] != ' ' && raw[*i] != '$' && raw[*i] != '"'
+		&& raw[*i] != '\'' && raw[*i] != '/' && raw[*i] != '|'
+		&& raw[*i] != '<' && raw[*i] != '>' && raw[*i] != '=')
+		(*i)++;
+	name = ft_substr(raw, start, *i - start);
+	val = get_env_value(name, sh->our_envp, sh->last_status);
+	free(name);
+	return (val);
+}
+
+static char	*expand_in_double(char *raw, int *i, char *res, t_shell *sh)
+{
+	char	*val;
+
+	while (raw[*i] && raw[*i] != '"')
+	{
+		if (raw[*i] == '$')
+		{
+			val = expand_var(raw, i, sh);
+			res = str_join_free(res, val);
+		}
+		else
+			res = str_append_char(res, raw[(*i)++]);
+	}
+	if (raw[*i] == '"')
+		(*i)++;
+	return (res);
+}
+
+static char	*expand_in_single(char *raw, int *i, char *res)
+{
+	while (raw[*i] && raw[*i] != '\'')
+		res = str_append_char(res, raw[(*i)++]);
+	if (raw[*i] == '\'')
+		(*i)++;
+	return (res);
+}
+
+static char	*expand_token(char *raw, t_shell *sh)
+{
+	char	*res;
+	char	*val;
+	int		i;
+
+	res = ft_strdup("");
+	i = 0;
+	while (raw[i])
+	{
+		if (raw[i] == '\'')
+		{
+			i++;
+			res = expand_in_single(raw, &i, res);
+		}
+		else if (raw[i] == '"')
+		{
+			i++;
+			res = expand_in_double(raw, &i, res, sh);
+		}
+		else if (raw[i] == '$')
+		{
+			val = expand_var(raw, &i, sh);
+			res = str_join_free(res, val);
+		}
+		else
+			res = str_append_char(res, raw[i++]);
+	}
+	return (res);
+}
+
+void	expand_token_list(t_list_token *list, t_shell *sh)
+{
+	t_tokens	*tok;
+	char		*expanded;
+
+	tok = list->top;
+	while (tok)
+	{
+		if (tok->type == TOKEN_CMD)
+		{
+			expanded = expand_token(tok->name, sh);
+			free(tok->name);
+			tok->name = expanded;
+		}
+		tok = tok->next;
+	}
 }
 
 char	**duplicate_envp(char **envp)

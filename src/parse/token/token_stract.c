@@ -1,28 +1,8 @@
 #include "minishell.h"
 
-static int	handle_variable(char *line, int *i, char **our_envp,
-							t_list_token *lst, int *end)
+static int	handle_quote(char *line, int *i, int *end)
 {
-	int	j;
-
-	if (line[*i] != '$' || (*i > 0 && line[*i - 1] == '/'))
-		return (0);
-	j = stract_variables(line, i, our_envp, lst->shell);
-	if (j == 0)
-	{
-		(*i)++;
-		return (1);
-	}
-	if (*i > 0)
-		(*i)--;
-	*end = *i;
-	return (1);
-}
-
-static int	handle_quote(char *line, int *i, char **our_envp,
-						t_list_token *lst, int *end)
-{
-	if (!token_is_quote(line, i, our_envp, lst))
+	if (!token_is_quote(line, i))
 		return (0);
 	*end = *i;
 	return (1);
@@ -53,7 +33,7 @@ static int	*build_array(int start, int end, int i)
 	return (array_index);
 }
 
-int	*special_token(char *line, t_list_token *lst, char **our_envp, int *i)
+int	*special_token(char *line, t_list_token *lst, int *i)
 {
 	int	start;
 	int	end;
@@ -63,9 +43,7 @@ int	*special_token(char *line, t_list_token *lst, char **our_envp, int *i)
 	while ((line[*i] != ' ' || (*i > 0 && line[*i] == ' '
 				&& line[*i - 1] == '/')) && line[*i] != '\0')
 	{
-		if (handle_variable(line, i, our_envp, lst, &end))
-			break ;
-		if (handle_quote(line, i, our_envp, lst, &end))
+		if (handle_quote(line, i, &end))
 			break ;
 		if (handle_pipe_redirect(line, i, &start, &end, lst))
 			continue ;

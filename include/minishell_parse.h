@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:38 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/17 19:14:40 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/17 19:12:38 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,15 @@
 // FUNCTIONS
 
 // Expander -> expander.c
-int		stract_variables(char *line, int *i, char **our_envp, t_shell *sh);
 char	**duplicate_envp(char **envp);
+void	expand_token_list(t_list_token *list_token, t_shell *sh);
 
 // Token -> token.c
 void	token_add_list(t_list_token *list_token, char *new_token);
-int		init_token(char *line, t_list_token *list_token, char **our_envp);
+int		init_token(char *line, t_list_token *list_token);
 
 // Token -> token_utils.c
-int		token_is_quote(char *line, int *i, char **our_envp,
-			t_list_token *list_token);
+int		token_is_quote(char *line, int *i);
 int		token_is_pipe(char *line, int *i, int *start, t_list_token *list_token);
 void	token_is_double_redirect(char *line, int *i, int *start,
 			t_list_token *list_token);
@@ -33,8 +32,7 @@ int		token_is_redirect(char *line, int *i, int *start,
 void	free_token_list(t_list_token *list_token);
 
 // Token -> token_stract.c
-int		*special_token(char *line,
-			t_list_token *list_token, char **our_envp, int *i);
+int		*special_token(char *line, t_list_token *lst, int *i);
 
 // Parser -> parser.c
 void	create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);

@@ -86,11 +86,16 @@ int	env_add_empty(char ***env, const char *name)
 
 int	env_set(char ***env, const char *var)
 {
-	int	idx;
+	int		idx;
+	char	*name;
 
 	if (!env || !var)
 		return (-1);
-	idx = env_get(*env, var);
+	name = get_var_name(var);
+	if (!name)
+		return (-1);
+	idx = env_get(*env, name);
+	free(name);
 	if (idx != -1)
 		return (env_replace(*env, idx, var));
 	return (env_add(env, var));

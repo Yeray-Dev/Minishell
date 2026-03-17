@@ -1,7 +1,6 @@
 #include "minishell.h"
 
-static void	token_stract_tokens(char *line, t_list_token *list_token,
-	char **our_envp)
+static void	token_stract_tokens(char *line, t_list_token *list_token)
 {
 	int		i;
 	int		start;
@@ -14,7 +13,7 @@ static void	token_stract_tokens(char *line, t_list_token *list_token,
 		i++;
 	while (line[i] != '\0')
 	{
-		array_index = special_token(line, list_token, our_envp, &i);
+		array_index = special_token(line, list_token, &i);
 		start = array_index[0];
 		end = array_index[1];
 		i = array_index[2];
@@ -54,9 +53,9 @@ void	token_add_list(t_list_token *list_token, char *new_token)
 	}
 }
 
-int	init_token(char *line, t_list_token *list_token, char **our_envp)
+int	init_token(char *line, t_list_token *list_token)
 {
 	if (line != NULL)
-		token_stract_tokens(line, list_token, our_envp);
+		token_stract_tokens(line, list_token);
 	return (1);
 }

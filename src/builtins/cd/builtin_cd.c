@@ -36,6 +36,8 @@ static char	*resolve_cd_path(t_shell *sh, t_cmd *cmd)
 			return (NULL);
 		}
 	}
+	else if (!ft_strcmp(cmd->argv[1], "~"))
+		path = get_home_cached(sh);
 	else
 		path = cmd->argv[1];
 	return (path);

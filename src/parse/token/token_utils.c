@@ -1,32 +1,22 @@
 #include "minishell.h"
 
-int	token_is_quote(char *line, int *i, char **our_envp,
-	t_list_token *list_token)
+int	token_is_quote(char *line, int *i)
 {
 	char	quote_char;
 
-	if (line[*i] == QUOTES || line[*i] == QUOTE)
+	if (line[*i] != QUOTES && line[*i] != QUOTE)
+		return (0);
+	quote_char = line[*i];
+	(*i)++;
+	while (line[*i] && line[*i] != quote_char)
+		(*i)++;
+	if (!line[*i])
 	{
-		quote_char = line[*i];
-		(*i)++;
-		while (line[*i] != quote_char && line[*i] != '\0')
-		{
-			if (quote_char == QUOTES && line[*i] == '$' && line[*i - 1] != '/')
-			{
-				*i += stract_variables(line, i, our_envp, list_token->shell);
-				continue ;
-			}
-			(*i)++;
-		}
-		if (line[*i] == '\0')
-		{
-			ft_putstr_fd("minishell: unexpected EOF while looking for matching quote\n", 2);
-			return (-1);
-		}
-		(*i)++;
-		return (1);
+		ft_putstr_fd("minishell: syntax error: unclosed quote\n", 2);
+		return (-1);
 	}
-	return (0);
+	(*i)++;
+	return (1);
 }
 
 int	token_is_pipe(char *line, int *i, int *start, t_list_token *list_token)
@@ -65,10 +55,10 @@ void	token_is_double_redirect(char *line, int *i, int *start,
 	}
 	(*i) += 2;
 	*start = *i;
-	new_token = ft_substr (line, *i - 2, 2);
-	token_add_list (list_token, new_token);
+	new_token = ft_substr(line, *i - 2, 2);
+	token_add_list(list_token, new_token);
 	list_token->last->type = TOKEN_REDIRECTIONS;
-	free (new_token);
+	free(new_token);
 }
 
 int	token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
@@ -78,23 +68,23 @@ int	token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
 	if (ft_strncmp(&line[*i], "<<", 2) == 0
 		|| ft_strncmp(&line[*i], ">>", 2) == 0)
 	{
-		token_is_double_redirect (line, i, start, list_token);
+		token_is_double_redirect(line, i, start, list_token);
 		return (1);
 	}
 	else if (line[*i] == '<' || line[*i] == '>')
 	{
 		if (*i > *start)
 		{
-			new_token = ft_substr (line, *start, *i - *start);
-			token_add_list (list_token, new_token);
-			free (new_token);
+			new_token = ft_substr(line, *start, *i - *start);
+			token_add_list(list_token, new_token);
+			free(new_token);
 		}
 		(*i)++;
 		*start = *i;
 		new_token = ft_substr(line, *i - 1, 1);
-		token_add_list (list_token, new_token);
+		token_add_list(list_token, new_token);
 		list_token->last->type = TOKEN_REDIRECTIONS;
-		free (new_token);
+		free(new_token);
 		return (1);
 	}
 	return (0);
@@ -109,8 +99,8 @@ void	free_token_list(t_list_token *list_token)
 	while (current)
 	{
 		next = current->next;
-		free (current->name);
-		free (current);
+		free(current->name);
+		free(current);
 		current = next;
 	}
 	list_token->top = NULL;

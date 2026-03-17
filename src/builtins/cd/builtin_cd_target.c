@@ -46,7 +46,10 @@ void	update_environment(t_shell *sh, char *oldpwd, char *pwd)
 	{
 		tmp = ft_strjoin("OLDPWD=", oldpwd);
 		if (tmp)
+		{
 			env_set(&sh->our_envp, tmp);
+			free(tmp);
+		}
 	}
 	if (pwd)
 	{
@@ -54,7 +57,8 @@ void	update_environment(t_shell *sh, char *oldpwd, char *pwd)
 		if (tmp)
 		{
 			env_set(&sh->our_envp, tmp);
-			free(pwd);
+			free(tmp);
 		}
+		free(pwd);
 	}
 }
