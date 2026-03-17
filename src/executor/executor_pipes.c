@@ -20,8 +20,18 @@ void	create_pipes(t_exec *exec)
 	while (i < exec->n_pipes)
 	{
 		exec->pipes[i] = malloc(sizeof(int) * 2);
+		if (!exec->pipes[i])
+		{
+			perror("malloc");
+			return ;
+		}
 		if (pipe(exec->pipes[i]) < 0)
+		{
 			perror("pipe");
+			free(exec->pipes[i]);
+			exec->pipes[i] = NULL;
+			return ;
+		}
 		i++;
 	}
 }

@@ -49,8 +49,13 @@ int	parser(char *line, t_shell *t_shell)
 		return (0);
 	else
 	{
-		add_history(line);
-		init_token(line, &t_shell->list_token);
+		if (line[0])
+			add_history(line);
+		if (init_token(line, &t_shell->list_token) == -1)
+		{
+			t_shell->last_status = 2;
+			return (0);
+		}
 		expand_token_list(&t_shell->list_token, t_shell);
 		create_cmd(&t_shell->list_token, &t_shell->cmd_list);
 	}

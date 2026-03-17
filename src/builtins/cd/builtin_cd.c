@@ -38,6 +38,15 @@ static char	*resolve_cd_path(t_shell *sh, t_cmd *cmd)
 	}
 	else if (!ft_strcmp(cmd->argv[1], "~"))
 		path = get_home_cached(sh);
+	else if (!ft_strcmp(cmd->argv[1], "-"))
+	{
+		path = get_local_env("OLDPWD", sh->our_envp);
+		if (!path)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+			return (NULL);
+		}
+	}
 	else
 		path = cmd->argv[1];
 	return (path);
@@ -55,6 +64,8 @@ int	builtin_cd(t_shell *sh, t_cmd *cmd)
 	if (!path)
 		return (1);
 	oldpwd = get_local_env("PWD", sh->our_envp);
+	if (cmd->argv[1] && !ft_strcmp(cmd->argv[1], "-"))
+		printf("%s\n", path);
 	if (chdir(path) != 0)
 	{
 		perror("minishell: cd");

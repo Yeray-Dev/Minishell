@@ -2,8 +2,13 @@
 
 static int	handle_quote(char *line, int *i, int *end)
 {
-	if (!token_is_quote(line, i))
+	int	ret;
+
+	ret = token_is_quote(line, i);
+	if (ret == 0)
 		return (0);
+	if (ret == -1)
+		return (-1);
 	*end = *i;
 	return (1);
 }
@@ -37,13 +42,21 @@ int	*special_token(char *line, t_list_token *lst, int *i)
 {
 	int	start;
 	int	end;
+	int	ret;
 
 	start = *i;
 	end = start;
 	while ((line[*i] != ' ' || (*i > 0 && line[*i] == ' '
 				&& line[*i - 1] == '/')) && line[*i] != '\0')
 	{
-		if (handle_quote(line, i, &end))
+		ret = handle_quote(line, i, &end);
+		if (ret == -1)
+		{
+			while (line[*i])
+				(*i)++;
+			return (build_array(-1, -1, *i));
+		}
+		if (ret == 1)
 			break ;
 		if (handle_pipe_redirect(line, i, &start, &end, lst))
 			continue ;
