@@ -1,13 +1,14 @@
 #include "minishell.h"
 
-static void token_stract_tokens(char *line, t_list_token *list_token, char **our_envp)
+static void	token_stract_tokens(char *line, t_list_token *list_token,
+	char **our_envp)
 {
 	int		i;
 	int		start;
 	int		end;
 	char	*new_token;
 	int		*array_index;
- 
+
 	i = 0;
 	while (line[i] == ' ')
 		i++;
@@ -30,33 +31,32 @@ static void token_stract_tokens(char *line, t_list_token *list_token, char **our
 	}
 }
 
-
-void token_add_list(t_list_token *list_token, char* new_token)
+void	token_add_list(t_list_token *list_token, char *new_token)
 {
-        t_tokens *token;
+	t_tokens	*token;
 
-        if (!list_token || !new_token)
-            return;
-        token = malloc(sizeof(t_tokens));
-        if (!token)
-            return;
-        token->name = ft_strdup(new_token);
-        token->next = NULL;
-        if (list_token->top == NULL)
-        {
-            list_token->top = token;
-            list_token->last = token;
-        }
-        else
-        {
-            list_token->last->next = token;
-            list_token->last = token;
-        }
+	if (!list_token || !new_token)
+		return ;
+	token = malloc(sizeof(t_tokens));
+	if (!token)
+		return ;
+	token->name = ft_strdup(new_token);
+	token->next = NULL;
+	if (list_token->top == NULL)
+	{
+		list_token->top = token;
+		list_token->last = token;
+	}
+	else
+	{
+		list_token->last->next = token;
+		list_token->last = token;
+	}
 }
 
-int init_token(char *line, t_list_token *list_token, char **our_envp)
+int	init_token(char *line, t_list_token *list_token, char **our_envp)
 {
-    if (line != NULL)
-        token_stract_tokens(line, list_token, our_envp);
-    return 1;
+	if (line != NULL)
+		token_stract_tokens(line, list_token, our_envp);
+	return (1);
 }

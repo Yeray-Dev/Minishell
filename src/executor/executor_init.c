@@ -72,6 +72,8 @@ void	build_exec_cmd_list(t_exec *exec, t_cmd *cmd_list)
 	while (cmd_list)
 	{
 		new = init_exec_cmd(cmd_list);
+		if (!new)
+			return ;
 		if (!exec->cmds)
 			exec->cmds = new;
 		if (prev)

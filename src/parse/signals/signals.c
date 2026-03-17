@@ -1,15 +1,14 @@
 #include "minishell.h"
 
-
-void init_signals(void)
+void	init_signals(void)
 {
-    struct termios term;
+	struct termios	term;
 
-    if (tcgetattr(STDIN_FILENO, &term) == 0)
-    {
-        term.c_lflag &= ~ECHOCTL;
-        tcsetattr(STDIN_FILENO, TCSANOW, &term);
-    }
-    set_signal(SIGINT, handler_readline);
-    set_signal(SIGQUIT, SIG_IGN);
+	if (tcgetattr(STDIN_FILENO, &term) == 0)
+	{
+		term.c_lflag &= ~ECHOCTL;
+		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	}
+	set_signal(SIGINT, handler_readline);
+	set_signal(SIGQUIT, SIG_IGN);
 }

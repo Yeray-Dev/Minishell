@@ -1,95 +1,97 @@
 #include "minishell.h"
 
-size_t count_tokes(t_list_token *s_list_token)
+size_t	count_tokes(t_list_token *s_list_token)
 {
-    size_t count;
-    t_tokens *temp;
+	size_t		count;
+	t_tokens	*temp;
 
-    temp = s_list_token->top;
-    count = 0;
-    while (temp != NULL && temp->type != TOKEN_PIPE 
-            && temp->type != TOKEN_REDIRECTIONS)
-    {
-        count++;
-        temp = temp->next;
-    }
-    return count;
+	temp = s_list_token->top;
+	count = 0;
+	while (temp != NULL && temp->type != TOKEN_PIPE
+		&& temp->type != TOKEN_REDIRECTIONS)
+	{
+		count++;
+		temp = temp->next;
+	}
+	return (count);
 }
 
-void free_cmd_list(t_list_cmd *list_cmd)
+void	free_cmd_list(t_list_cmd *list_cmd)
 {
-    t_cmd *cmd;
-    t_cmd *next;
+	t_cmd	*cmd;
+	t_cmd	*next;
+	int		i;
 
-    cmd = list_cmd->top;
-    while(cmd)
-    {
-        next = cmd->next;
-        int i = 0;
-        while (cmd->argv[i])
-            free(cmd->argv[i++]);
-        free(cmd->argv);
-        if (cmd->infile) 
-         free(cmd->infile);
-        if (cmd->outfile)     
-         free(cmd->outfile);
-        if (cmd->heredoc_word) 
-         free(cmd->heredoc_word);
-        if (cmd->heredoc_fd != -1)
-             close(cmd->heredoc_fd);
-        free(cmd);
-        cmd = next; 
-    }
-    list_cmd->top = NULL;
-    list_cmd->last = NULL;
+	cmd = list_cmd->top;
+	while (cmd)
+	{
+		next = cmd->next;
+		i = 0;
+		while (cmd->argv[i])
+			free(cmd->argv[i++]);
+		free(cmd->argv);
+		if (cmd->infile)
+			free(cmd->infile);
+		if (cmd->outfile)
+			free(cmd->outfile);
+		if (cmd->heredoc_word)
+			free(cmd->heredoc_word);
+		if (cmd->heredoc_fd != -1)
+			close(cmd->heredoc_fd);
+		free(cmd);
+		cmd = next;
+	}
+	list_cmd->top = NULL;
+	list_cmd->last = NULL;
 }
 
-
-void set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token)
+void	set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token)
 {
-    if (!end_token || !*end_token)
-        return;
-    if ((*end_token)->type == TOKEN_PIPE)
-        new_cmd->has_pipe = 1;
-    else if ((*end_token)->type == TOKEN_REDIRECTIONS)
-    {
-
-        if (ft_strncmp((*end_token)->name, "<<", 2) == 0 && (*end_token)->next)
-        {
-            new_cmd->heredoc_word = ft_strdup((*end_token)->next->name);
-            new_cmd->is_heredoc = 1;
-        }
-        else if (ft_strncmp((*end_token)->name, ">>", 2) == 0 && (*end_token)->next)
-        {
-            new_cmd->outfile = ft_strdup((*end_token)->next->name);
-            new_cmd->append = 1;
-        }
-        else if (ft_strncmp((*end_token)->name, "<", 1) == 0 && (*end_token)->next)
-            new_cmd->infile = ft_strdup((*end_token)->next->name);
-        else if (ft_strncmp((*end_token)->name, ">", 1) == 0 && (*end_token)->next)
-            new_cmd->outfile = ft_strdup((*end_token)->next->name);
-        *end_token = (*end_token)->next;
-    }
+	if (!end_token || !*end_token)
+		return ;
+	if ((*end_token)->type == TOKEN_PIPE)
+		new_cmd->has_pipe = 1;
+	else if ((*end_token)->type == TOKEN_REDIRECTIONS)
+	{
+		if (ft_strncmp((*end_token)->name, "<<", 2) == 0 && (*end_token)->next)
+		{
+			new_cmd->heredoc_word = ft_strdup((*end_token)->next->name);
+			new_cmd->is_heredoc = 1;
+		}
+		else if (ft_strncmp((*end_token)->name, ">>", 2)
+			== 0 && (*end_token)->next)
+		{
+			new_cmd->outfile = ft_strdup((*end_token)->next->name);
+			new_cmd->append = 1;
+		}
+		else if (ft_strncmp((*end_token)->name, "<", 1) == 0
+			&& (*end_token)->next)
+			new_cmd->infile = ft_strdup((*end_token)->next->name);
+		else if (ft_strncmp((*end_token)->name, ">", 1) == 0
+			&& (*end_token)->next)
+			new_cmd->outfile = ft_strdup((*end_token)->next->name);
+		*end_token = (*end_token)->next;
+	}
 }
 
-void create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd)
+void	create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (s_list_token->top != NULL 
-        && s_list_token->top->type != TOKEN_PIPE 
-        && s_list_token->top->type != TOKEN_REDIRECTIONS)
-    {
-        current_cmd->argv[i++] = ft_strdup(s_list_token->top->name);
-        s_list_token->top = s_list_token->top->next;
-    }
-    current_cmd->argv[i] = NULL;
-    while (s_list_token->top != NULL
-            && s_list_token->top->type != TOKEN_CMD)
-    {
-        set_cmd_link_type(current_cmd, &s_list_token->top);
-        if (s_list_token->top != NULL)
-            s_list_token->top = s_list_token->top->next;
-    }
+	i = 0;
+	while (s_list_token->top != NULL
+		&& s_list_token->top->type != TOKEN_PIPE
+		&& s_list_token->top->type != TOKEN_REDIRECTIONS)
+	{
+		current_cmd->argv[i++] = ft_strdup(s_list_token->top->name);
+		s_list_token->top = s_list_token->top->next;
+	}
+	current_cmd->argv[i] = NULL;
+	while (s_list_token->top != NULL
+		&& s_list_token->top->type != TOKEN_CMD)
+	{
+		set_cmd_link_type(current_cmd, &s_list_token->top);
+		if (s_list_token->top != NULL)
+			s_list_token->top = s_list_token->top->next;
+	}
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_builtin.h                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/17 19:12:32 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/17 19:12:32 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_BUILTIN_H
 # define MINISHELL_BUILTIN_H
 
@@ -20,7 +32,7 @@ int			builtin_cd(t_shell *sh, t_cmd *cmd);
 void		free_dblptr(char **ptr);
 char		*ft_strjoin3(const char *a, const char *b, const char *c);
 long long	atoi_overflow(const char *str, int *error);
-char 		*ft_substr(const char *s, unsigned int start, size_t len);
+char		*ft_substr(const char *s, unsigned int start, size_t len);
 
 // ---------- FUNCIONES AUXILIARES DE ENTORNO ----------
 /* env_init_utils.c */
@@ -38,7 +50,7 @@ char		*get_command_path(char *cmd, char **envp);
 void		fork_and_exec(char **tokens, char **envp, int *exit_status);
 
 // ---------- FUNCIONES EXPORT ----------
-void 		export_one(t_shell *sh, char *arg, int *has_error);
+void		export_one(t_shell *sh, char *arg, int *has_error);
 void		print_export(char *var);
 void		env_sort(char **env);
 char		**env_copy(char **env);

@@ -1,24 +1,36 @@
- #include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_type.h                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/17 19:12:27 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/17 19:12:28 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 // ENUM
 
 typedef enum e_token_type
 {
-    TOKEN_CMD,
-    TOKEN_PIPE,
-    TOKEN_REDIRECTIONS
-}token_type;
+	TOKEN_CMD,
+	TOKEN_PIPE,
+	TOKEN_REDIRECTIONS
+}	t_token_type;
 
 typedef enum e_builtin_type
 {
-    BI_NONE,
-    BI_ECHO,
-    BI_PWD,
-    BI_CD,
-    BI_EXPORT,
-    BI_UNSET,
-    BI_ENV,
-    BI_EXIT
+	BI_NONE,
+	BI_ECHO,
+	BI_PWD,
+	BI_CD,
+	BI_EXPORT,
+	BI_UNSET,
+	BI_ENV,
+	BI_EXIT
 } t_builtin_type;
 
 // DEFINE
@@ -34,33 +46,32 @@ typedef enum e_builtin_type
 
 typedef struct s_cmd
 {
-    char **argv; // Cada token
-    char *path;
-    char *infile; 
-    char *outfile;
-    char *heredoc_word;
-    int is_heredoc;
-    int heredoc_fd;
-    t_builtin_type builtin_type;
-    int append;
-    int has_pipe; 
-
-    struct s_cmd *next;
+	char			**argv;
+	char			*path;
+	char			*infile; 
+	char			*outfile;
+	char			*heredoc_word;
+	int				is_heredoc;
+	int				heredoc_fd;
+	int 			append;
+	int				has_pipe; 
+	t_builtin_type	builtin_type;
+	struct s_cmd	*next;
 }t_cmd;
 
 typedef struct s_list_cmd
 {
-    t_cmd *top;
-    t_cmd *last;
+	t_cmd			*top;
+	t_cmd			*last;
 
 } t_list_cmd;
 
 typedef struct s_tokens
 {
-    char *name;
-    int type;
-    int quotes;
-    struct s_tokens *next;
+	char *name;
+	int type;
+	int quotes;
+	struct s_tokens *next;
 
 } t_tokens;
 
@@ -78,36 +89,36 @@ typedef struct s_exec_cmd
 
 typedef struct s_exec
 {
-    int n_cmds;
-    int n_pipes;
+	int n_cmds;
+	int n_pipes;
 
-    int **pipes;
-    pid_t *pids;
+	int **pipes;
+	pid_t *pids;
 
-    t_exec_cmd *cmds;
+	t_exec_cmd *cmds;
 
 } t_exec;
 
 typedef struct s_list_token
 {
-    t_tokens *top;
-    t_tokens *last;
-    struct s_shell *shell;
+	t_tokens *top;
+	t_tokens *last;
+	struct s_shell *shell;
 
 } t_list_token;
 
 typedef struct s_shell
 {
-    t_list_token list_token;
-    t_list_cmd cmd_list;
-    char **our_envp;
-    int last_status;
-    int exit_status;
-    char *cd_home;
+	t_list_token list_token;
+	t_list_cmd cmd_list;
+	char **our_envp;
+	int last_status;
+	int exit_status;
+	char *cd_home;
 
 }t_shell;
 
 
 // GLOBALS
 
-extern volatile sig_atomic_t handler;
+extern volatile sig_atomic_t g_handler;
