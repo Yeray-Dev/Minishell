@@ -7,7 +7,12 @@ RUN apt-get update && apt-get install -y \
     libreadline-dev \
     git \
     valgrind \
+    python3 \
+    python3-pip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Instalar norminette
+RUN pip3 install norminette --break-system-packages
 
 # Carpeta del proyecto dentro del contenedor
 WORKDIR /minishell

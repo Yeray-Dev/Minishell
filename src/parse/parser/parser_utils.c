@@ -44,20 +44,6 @@ void free_cmd_list(t_list_cmd *list_cmd)
     list_cmd->last = NULL;
 }
 
-void add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd)
-{
-    new_cmd->next = NULL;
-    if (list_cmd->top == NULL)
-    {
-        list_cmd->top = new_cmd;
-        list_cmd->last = new_cmd;
-    }
-    else
-    {
-        list_cmd->last->next = new_cmd;
-        list_cmd->last = new_cmd;
-    }
-}
 
 void set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token)
 {
@@ -107,42 +93,3 @@ void create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd)
             s_list_token->top = s_list_token->top->next;
     }
 }
-
-// void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
-// {
-//     while(s_list_token->top != NULL) 
-//     {
-//         t_cmd *current_cmd;
-//         int i;
-
-//         current_cmd = ft_calloc(1, sizeof(t_cmd));
-//         if (!current_cmd)
-//             return ;
-//         current_cmd->heredoc_fd = -1;
-//         i = 0;
-//         current_cmd->argv = malloc(sizeof(char *) * (count_tokes(s_list_token) + 1));
-//         if(!current_cmd->argv)
-//         {
-//             free(current_cmd);
-//             return ;    
-//         }
-//         while (s_list_token->top != NULL 
-//                 && s_list_token->top->type != TOKEN_PIPE 
-//                 && s_list_token->top->type != TOKEN_REDIRECTIONS)
-//         {
-//             current_cmd->argv[i++] = ft_strdup(s_list_token->top->name);
-//             s_list_token->top = s_list_token->top->next;
-//         }
-//         current_cmd->argv[i] = NULL;
-//         while (s_list_token->top != NULL
-//                 && s_list_token->top->type != TOKEN_CMD)
-//         {
-//             set_cmd_link_type(current_cmd, &s_list_token->top);
-//             if (s_list_token->top != NULL)
-//                 s_list_token->top = s_list_token->top->next;
-//         }
-        
-//         detect_builtin(current_cmd);
-//         add_cmd_list(current_cmd, list_cmd);
-//     }
-// }

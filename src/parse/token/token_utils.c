@@ -94,4 +94,20 @@ int token_is_redirect(char *line, int *i, int *start, t_list_token *list_token)
     }
     return (0);
 }
+void free_token_list(t_list_token *list_token)
+{
+    t_tokens *current;
+    t_tokens *next;
+
+    current = list_token->top;
+    while(current)
+    {
+        next = current->next;
+        free(current->name);
+        free(current);
+        current = next;
+    }
+    list_token->top = NULL;
+    list_token->last = NULL;
+}
 

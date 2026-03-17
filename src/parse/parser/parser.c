@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+void add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd)
+{
+    new_cmd->next = NULL;
+    if (list_cmd->top == NULL)
+    {
+        list_cmd->top = new_cmd;
+        list_cmd->last = new_cmd;
+    }
+    else
+    {
+        list_cmd->last->next = new_cmd;
+        list_cmd->last = new_cmd;
+    }
+}
+
 void create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
 {
     while(s_list_token->top != NULL) 
@@ -30,6 +45,7 @@ void complete_cmd(t_cmd *new_cmd, t_list_cmd *list_cmd, t_tokens **token)
 
 int parser(char *line, t_shell *t_shell)
 {
+    free_token_list(&t_shell->list_token);
     t_shell->list_token.top = NULL;
     t_shell->list_token.last = NULL;
     t_shell->cmd_list.top = NULL;

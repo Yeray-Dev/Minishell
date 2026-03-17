@@ -2,70 +2,32 @@
 
 static void token_stract_tokens(char *line, t_list_token *list_token, char **our_envp)
 {
-    int i;
-    int j;
-    int start;
-    int end;
-    char *new_token;
-    
-
-    i = 0;
-    j = 0;
-    while (line[i] == ' ')
-        i++;
-    while(line[i] != '\0')
-    {
-        j = 0;
-        start = i;
-        while ((line[i] != ' ' || (i > 0 && line[i] == ' ' && line[i - 1] == '/')) && line[i] != '\0')
-        {
-            if (line[i] == '$' && (i == 0 || line[i - 1] != '/'))
-            {
-                j = stract_variables(line, &i, our_envp, list_token->shell);
-                if (j == 0)
-                {
-                    i++;
-                    break;
-                }
-                if (i > 0)
-                    i--;
-                end = i;
-                break;
-            }
-            if (token_is_quote(line, &i, our_envp, list_token))
-            {
-                start ++;
-                i = i - 1;
-                start = i;
-                break;
-            }
-            if (token_is_pipe(line, &i, &start, list_token) 
-                || token_is_redirect(line, &i, &start, list_token))
-            {
-                while (line[i] == ' ')
-                    i++;
-                start = i;
-                continue;
-            }
-            if (line[i] != '\0')
-                i++;
-        }
-        end = i;
-        if (line[i] != '\0')
-            i++;
-        if (end - start > 0)
-        {
-             printf("start=%d end=%d substr='%.*s'\n", start, end, end - start, line + start);
-            new_token = ft_substr(line, start, end - start);
-            token_add_list(list_token, new_token);
-            free(new_token);
-        }
-        i += j;
-        while (line[i] == ' ')
-            i++;
-        if (list_token->last)
-            list_token->last->type = TOKEN_CMD;
-    }
+	int		i;
+	int		start;
+	int		end;
+	char	*new_token;
+	int		*array_index;
+ 
+	i = 0;
+	while (line[i] == ' ')
+		i++;
+	while (line[i] != '\0')
+	{
+		array_index = special_token(line, list_token, our_envp, &i);
+		start = array_index[0];
+		end = array_index[1];
+		i = array_index[2];
+		if (end - start > 0)
+		{
+			new_token = ft_substr(line, start, end - start);
+			token_add_list(list_token, new_token);
+			free(new_token);
+		}
+		while (line[i] == ' ')
+			i++;
+		if (list_token->last)
+			list_token->last->type = TOKEN_CMD;
+	}
 }
 
 
