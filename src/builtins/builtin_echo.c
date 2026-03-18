@@ -38,13 +38,13 @@ int	builtin_echo(t_shell *sh, t_cmd *cmd)
 	}
 	while (cmd->argv[i])
 	{
-		printf("%s", cmd->argv[i]);
+		write(1, cmd->argv[i], ft_strlen(cmd->argv[i]));
 		if (cmd->argv[i + 1])
-			printf(" ");
+			write(1, " ", 1);
 		i++;
 	}
 	if (print_newline)
-		printf("\n");
+		write(1, "\n", 1);
 	sh->last_status = 0;
 	return (sh->last_status);
 }

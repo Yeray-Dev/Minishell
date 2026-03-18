@@ -7,11 +7,19 @@ size_t	count_tokes(t_list_token *s_list_token)
 
 	temp = s_list_token->top;
 	count = 0;
-	while (temp != NULL && temp->type != TOKEN_PIPE
-		&& temp->type != TOKEN_REDIRECTIONS)
+	while (temp != NULL && temp->type != TOKEN_PIPE)
 	{
-		count++;
-		temp = temp->next;
+		if (temp->type == TOKEN_REDIRECTIONS)
+		{
+			temp = temp->next;
+			if (temp != NULL)
+				temp = temp->next;
+		}
+		else
+		{
+			count++;
+			temp = temp->next;
+		}
 	}
 	return (count);
 }
@@ -80,18 +88,25 @@ void	create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd)
 
 	i = 0;
 	while (s_list_token->top != NULL
-		&& s_list_token->top->type != TOKEN_PIPE
-		&& s_list_token->top->type != TOKEN_REDIRECTIONS)
+		&& s_list_token->top->type != TOKEN_PIPE)
 	{
-		current_cmd->argv[i++] = ft_strdup(s_list_token->top->name);
-		s_list_token->top = s_list_token->top->next;
+		if (s_list_token->top->type == TOKEN_REDIRECTIONS)
+		{
+			set_cmd_link_type(current_cmd, &s_list_token->top);
+			if (s_list_token->top != NULL)
+				s_list_token->top = s_list_token->top->next;
+		}
+		else
+		{
+			current_cmd->argv[i++] = ft_strdup(s_list_token->top->name);
+			s_list_token->top = s_list_token->top->next;
+		}
 	}
 	current_cmd->argv[i] = NULL;
-	while (s_list_token->top != NULL
-		&& s_list_token->top->type != TOKEN_CMD)
+	if (s_list_token->top != NULL
+		&& s_list_token->top->type == TOKEN_PIPE)
 	{
-		set_cmd_link_type(current_cmd, &s_list_token->top);
-		if (s_list_token->top != NULL)
-			s_list_token->top = s_list_token->top->next;
+		current_cmd->has_pipe = 1;
+		s_list_token->top = s_list_token->top->next;
 	}
 }

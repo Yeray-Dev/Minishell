@@ -5,7 +5,6 @@ volatile sig_atomic_t	g_handler = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	t_shell;
-	char	*line;
 
 	(void)argc;
 	(void)argv;
@@ -17,20 +16,20 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		g_handler = 0;
-		line = readline("MiniShell: > ");
-		if (line == NULL)
+		t_shell.line = readline("MiniShell: > ");
+		if (t_shell.line == NULL)
 			break ;
 		if (g_handler == 1)
 		{
 			t_shell.last_status = 1;
 			g_handler = 0;
-			free(line);
+			free(t_shell.line);
 			continue ;
 		}
-		parser(line, &t_shell);
+		parser(&t_shell);
 		execute_commands(&t_shell);
 		free_cmd_list(&t_shell.cmd_list);
-		free(line);
+		free(t_shell.line);
 	}
 	free_dblptr(t_shell.our_envp);
 	return (0);

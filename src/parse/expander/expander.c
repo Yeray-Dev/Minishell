@@ -54,6 +54,11 @@ static char	*expand_var(char *raw, int *i, t_shell *sh)
 		&& raw[*i] != '<' && raw[*i] != '>' && raw[*i] != '=')
 		(*i)++;
 	name = ft_substr(raw, start, *i - start);
+	if (!name[0])
+	{
+		free(name);
+		return (ft_strdup("$"));
+	}
 	val = get_env_value(name, sh->our_envp, sh->last_status);
 	free(name);
 	return (val);
@@ -118,20 +123,57 @@ static char	*expand_token(char *raw, t_shell *sh)
 	return (res);
 }
 
+static int	has_quotes(char *s)
+{
+	while (*s)
+	{
+		if (*s == '\'' || *s == '"')
+			return (1);
+		s++;
+	}
+	return (0);
+}
+
+static t_tokens	*remove_token(t_list_token *list, t_tokens *prev, t_tokens *tok)
+{
+	t_tokens	*next;
+
+	next = tok->next;
+	if (prev == NULL)
+		list->top = next;
+	else
+		prev->next = next;
+	if (list->last == tok)
+		list->last = prev;
+	free(tok->name);
+	free(tok);
+	return (next);
+}
+
 void	expand_token_list(t_list_token *list, t_shell *sh)
 {
 	t_tokens	*tok;
+	t_tokens	*prev;
 	char		*expanded;
+	int			pure_var;
 
 	tok = list->top;
+	prev = NULL;
 	while (tok)
 	{
 		if (tok->type == TOKEN_CMD)
 		{
+			pure_var = !has_quotes(tok->name);
 			expanded = expand_token(tok->name, sh);
 			free(tok->name);
 			tok->name = expanded;
+			if (pure_var && tok->name[0] == '\0')
+			{
+				tok = remove_token(list, prev, tok);
+				continue ;
+			}
 		}
+		prev = tok;
 		tok = tok->next;
 	}
 }

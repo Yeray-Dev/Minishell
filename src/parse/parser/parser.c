@@ -38,20 +38,20 @@ void	create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
 	}
 }
 
-int	parser(char *line, t_shell *t_shell)
+int	parser(t_shell *t_shell)
 {
 	free_token_list(&t_shell->list_token);
 	t_shell->list_token.top = NULL;
 	t_shell->list_token.last = NULL;
 	t_shell->cmd_list.top = NULL;
 	t_shell->cmd_list.last = NULL;
-	if (line == NULL)
+	if (t_shell->line == NULL)
 		return (0);
 	else
 	{
-		if (line[0])
-			add_history(line);
-		if (init_token(line, &t_shell->list_token) == -1)
+		if (t_shell->line[0])
+			add_history(t_shell->line);
+		if (init_token(&t_shell->list_token) == -1)
 		{
 			t_shell->last_status = 2;
 			return (0);

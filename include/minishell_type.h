@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:27 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/17 19:12:28 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/18 08:29:50 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ typedef struct s_shell
 	int last_status;
 	int exit_status;
 	char *cd_home;
+	char *line;
 
 }t_shell;
 

@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:38 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/17 19:12:38 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/18 09:14:47 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	expand_token_list(t_list_token *list_token, t_shell *sh);
 
 // Token -> token.c
 void	token_add_list(t_list_token *list_token, char *new_token);
-int		init_token(char *line, t_list_token *list_token);
+int		init_token(t_list_token *list_token);
 
 // Token -> token_utils.c
 int		token_is_quote(char *line, int *i);
@@ -36,7 +36,7 @@ int		*special_token(char *line, t_list_token *lst, int *i);
 
 // Parser -> parser.c
 void	create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);
-int		parser(char *line, t_shell *t_shell);
+int		parser(t_shell *t_shell);
 
 // Parser -> parser_utils.c
 size_t	count_tokes(t_list_token *s_list_token);

@@ -14,13 +14,15 @@
 
 static void	handle_exit_invalid_arg(t_shell *sh, char *arg)
 {
-	printf("minishell: exit: %s: numeric argument required\n", arg);
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
 	sh->last_status = 2;
 }
 
 static void	handle_exit_too_many_args(t_shell *sh)
 {
-	printf("minishell: exit: too many arguments\n");
+	ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 	sh->last_status = 1;
 }
 
@@ -29,7 +31,7 @@ void	builtin_exit(t_shell *sh, t_cmd *cmd)
 	long long	exit_code;
 	int			invalid;
 
-	printf("exit\n");
+	write(1, "exit\n", 5);
 	if (cmd->argv[1] && cmd->argv[2])
 	{
 		handle_exit_too_many_args(sh);

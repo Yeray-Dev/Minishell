@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 08:16:17 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/18 09:15:04 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int	token_stract_tokens(char *line, t_list_token *list_token)
+static int	token_stract_tokens(t_list_token *l_token)
 {
 	int		i;
 	int		start;
@@ -9,11 +21,11 @@ static int	token_stract_tokens(char *line, t_list_token *list_token)
 	int		*array_index;
 
 	i = 0;
-	while (line[i] == ' ')
+	while (l_token->shell->line[i] == ' ')
 		i++;
-	while (line[i] != '\0')
+	while (l_token->shell->line[i] != '\0')
 	{
-		array_index = special_token(line, list_token, &i);
+		array_index = special_token(l_token->shell->line, l_token, &i);
 		start = array_index[0];
 		end = array_index[1];
 		i = array_index[2];
@@ -21,14 +33,14 @@ static int	token_stract_tokens(char *line, t_list_token *list_token)
 			return (-1);
 		if (end - start > 0)
 		{
-			new_token = ft_substr(line, start, end - start);
-			token_add_list(list_token, new_token);
+			new_token = ft_substr(l_token->shell->line, start, end - start);
+			token_add_list(l_token, new_token);
 			free(new_token);
 		}
-		while (line[i] == ' ')
+		while (l_token->shell->line[i] == ' ')
 			i++;
-		if (list_token->last)
-			list_token->last->type = TOKEN_CMD;
+		if (l_token->last)
+			l_token->last->type = TOKEN_CMD;
 	}
 	return (0);
 }
@@ -61,9 +73,9 @@ void	token_add_list(t_list_token *list_token, char *new_token)
 	}
 }
 
-int	init_token(char *line, t_list_token *list_token)
+int	init_token(t_list_token *list_token)
 {
-	if (line != NULL)
-		return (token_stract_tokens(line, list_token));
+	if (list_token->shell->line != NULL)
+		return (token_stract_tokens(list_token));
 	return (0);
 }

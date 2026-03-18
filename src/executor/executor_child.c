@@ -14,6 +14,8 @@
 
 void	exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec)
 {
+	int	err;
+
 	set_signal(SIGINT, SIG_DFL);
 	set_signal(SIGQUIT, SIG_DFL);
 	setup_pipes(exec, i);
@@ -27,10 +29,20 @@ void	exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec)
 	cmd->path = resolve_path(cmd->argv[0], sh->our_envp);
 	if (!cmd->path)
 	{
-		fprintf(stderr, "%s: command not found\n", cmd->argv[0]);
+		if (ft_strchr(cmd->argv[0], '/') && access(cmd->argv[0], F_OK) == 0)
+		{
+			ft_putstr_fd(cmd->argv[0], 2);
+			ft_putstr_fd(": Permission denied\n", 2);
+			exit(126);
+		}
+		ft_putstr_fd(cmd->argv[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
 	execve(cmd->path, cmd->argv, sh->our_envp);
+	err = errno;
 	perror(cmd->argv[0]);
+	if (err == EACCES || err == EISDIR)
+		exit(126);
 	exit(127);
 }
