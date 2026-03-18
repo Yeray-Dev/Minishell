@@ -1,23 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 09:25:06 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/18 09:42:28 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-static char	*str_join_free(char *s1, char *s2)
-{
-	char	*result;
-
-	result = ft_strjoin(s1, s2);
-	free(s1);
-	free(s2);
-	return (result);
-}
-
-static char	*str_append_char(char *s, char c)
-{
-	char	buf[2];
-
-	buf[0] = c;
-	buf[1] = '\0';
-	return (str_join_free(s, ft_strdup(buf)));
-}
 
 static char	*get_env_value(char *name, char **envp, int status)
 {
@@ -36,7 +29,7 @@ static char	*get_env_value(char *name, char **envp, int status)
 	return (ft_strdup(""));
 }
 
-static char	*expand_var(char *raw, int *i, t_shell *sh)
+char	*expand_var(char *raw, int *i, t_shell *sh)
 {
 	int		start;
 	char	*name;
@@ -62,34 +55,6 @@ static char	*expand_var(char *raw, int *i, t_shell *sh)
 	val = get_env_value(name, sh->our_envp, sh->last_status);
 	free(name);
 	return (val);
-}
-
-static char	*expand_in_double(char *raw, int *i, char *res, t_shell *sh)
-{
-	char	*val;
-
-	while (raw[*i] && raw[*i] != '"')
-	{
-		if (raw[*i] == '$')
-		{
-			val = expand_var(raw, i, sh);
-			res = str_join_free(res, val);
-		}
-		else
-			res = str_append_char(res, raw[(*i)++]);
-	}
-	if (raw[*i] == '"')
-		(*i)++;
-	return (res);
-}
-
-static char	*expand_in_single(char *raw, int *i, char *res)
-{
-	while (raw[*i] && raw[*i] != '\'')
-		res = str_append_char(res, raw[(*i)++]);
-	if (raw[*i] == '\'')
-		(*i)++;
-	return (res);
 }
 
 static char	*expand_token(char *raw, t_shell *sh)
@@ -121,33 +86,6 @@ static char	*expand_token(char *raw, t_shell *sh)
 			res = str_append_char(res, raw[i++]);
 	}
 	return (res);
-}
-
-static int	has_quotes(char *s)
-{
-	while (*s)
-	{
-		if (*s == '\'' || *s == '"')
-			return (1);
-		s++;
-	}
-	return (0);
-}
-
-static t_tokens	*remove_token(t_list_token *list, t_tokens *prev, t_tokens *tok)
-{
-	t_tokens	*next;
-
-	next = tok->next;
-	if (prev == NULL)
-		list->top = next;
-	else
-		prev->next = next;
-	if (list->last == tok)
-		list->last = prev;
-	free(tok->name);
-	free(tok);
-	return (next);
 }
 
 void	expand_token_list(t_list_token *list, t_shell *sh)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 09:54:58 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/18 09:55:34 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd)
@@ -17,10 +29,10 @@ void	add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd)
 
 void	create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd)
 {
+	t_cmd	*current_cmd;
+
 	while (s_list_token->top != NULL)
 	{
-		t_cmd	*current_cmd;
-
 		current_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!current_cmd)
 			return ;

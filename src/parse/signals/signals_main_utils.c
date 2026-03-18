@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   signals_main_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/18 10:39:47 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 10:39:57 by yblanco-         ###   ########.fr       */
+/*   Created: 2026/03/18 10:03:55 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/18 10:21:16 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <string.h>
+#include "minishell.h"
 
-int	ft_strcmp(char *s1, char *s2)
+int	signal_proccess(t_shell *sh)
 {
-	int	i;
-
-	i = 0;
-	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
-		i++;
-	return (s1[i] - s2[i]);
+	if (sh->line == NULL)
+		return (-1);
+	if (g_handler == 1)
+	{
+		sh->last_status = 1;
+		g_handler = 0;
+		free(sh->line);
+		return (1);
+	}
+	return (0);
 }

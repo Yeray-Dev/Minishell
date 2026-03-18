@@ -3,19 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yerayblancodelafuente <yerayblancodelaf    +#+  +:+       +#+        */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 14:41:25 by yblanco-          #+#    #+#             */
-/*   Updated: 2025/11/25 09:47:35 by yerayblanco      ###   ########.fr       */
+/*   Updated: 2026/03/18 10:38:54 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
-// #include <stdio.h>
-// #include <bsd/string.h>
 #include "libft.h"
 #include "stdio.h"
-
 
 char	*ft_strcpy(char *dest, char *src)
 {

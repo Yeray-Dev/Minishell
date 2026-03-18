@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yblanco- <yblanco-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 12:34:49 by yblanco-          #+#    #+#             */
-/*   Updated: 2025/07/07 16:56:02 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/18 12:21:05 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,8 @@ int	count_digits(int num)
 	return (count);
 }
 
-char	*ft_itoa(int n)
+static size_t	count_number(size_t count, long int new_n, int n)
 {
-	char		*number;
-	size_t		count;
-	long int	new_n;
-
-	new_n = (long int)n;
 	count = 0;
 	if ((long int)n <= 0)
 		count++;
@@ -44,6 +39,18 @@ char	*ft_itoa(int n)
 		new_n = new_n / 10;
 		count ++;
 	}
+	return (count);
+}
+
+char	*ft_itoa(int n)
+{
+	char		*number;
+	size_t		count;
+	long int	new_n;
+
+	count = 0;
+	new_n = (long int)n;
+	count = count_number(count, new_n, n);
 	number = ft_calloc(count + 1, sizeof(char));
 	if (number == NULL)
 		return (NULL);

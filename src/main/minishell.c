@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/18 10:02:12 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/18 10:10:13 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 volatile sig_atomic_t	g_handler = 0;
@@ -17,15 +29,10 @@ int	main(int argc, char **argv, char **envp)
 	{
 		g_handler = 0;
 		t_shell.line = readline("MiniShell: > ");
-		if (t_shell.line == NULL)
-			break ;
-		if (g_handler == 1)
-		{
-			t_shell.last_status = 1;
-			g_handler = 0;
-			free(t_shell.line);
+		if (signal_proccess(&t_shell) == 1)
 			continue ;
-		}
+		else if (signal_proccess(&t_shell) == -1)
+			break ;
 		parser(&t_shell);
 		execute_commands(&t_shell);
 		free_cmd_list(&t_shell.cmd_list);

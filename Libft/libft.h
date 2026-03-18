@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yerayblancodelafuente <yerayblancodelaf    +#+  +:+       +#+        */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 17:09:34 by yblanco-          #+#    #+#             */
-/*   Updated: 2025/11/25 09:36:56 by yerayblanco      ###   ########.fr       */
+/*   Updated: 2026/03/18 10:37:23 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,6 @@ int		ft_toupper(int c);
 void	ft_burbble_sort(int array_to_sort[], int size);
 int		ft_atoi_base(const char *str, int base);
 char	*ft_strcpy(char *dest, char *src);
-int     ft_strcmp(char *s1, char *s2);
+int		ft_strcmp(char *s1, char *s2);
 
 #endif

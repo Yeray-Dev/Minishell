@@ -6,18 +6,32 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 08:16:17 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 09:15:04 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/18 10:40:23 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	token_subtr(int start, int end, t_list_token *l_token )
+{
+	char	*new_token;
+
+	if (start == -1)
+		return (-1);
+	if (end - start > 0)
+	{
+		new_token = ft_substr(l_token->shell->line, start, end - start);
+		token_add_list(l_token, new_token);
+		free(new_token);
+	}
+	return (0);
+}
 
 static int	token_stract_tokens(t_list_token *l_token)
 {
 	int		i;
 	int		start;
 	int		end;
-	char	*new_token;
 	int		*array_index;
 
 	i = 0;
@@ -29,14 +43,8 @@ static int	token_stract_tokens(t_list_token *l_token)
 		start = array_index[0];
 		end = array_index[1];
 		i = array_index[2];
-		if (start == -1)
+		if (token_subtr(start, end, l_token) == -1)
 			return (-1);
-		if (end - start > 0)
-		{
-			new_token = ft_substr(l_token->shell->line, start, end - start);
-			token_add_list(l_token, new_token);
-			free(new_token);
-		}
 		while (l_token->shell->line[i] == ' ')
 			i++;
 		if (l_token->last)
