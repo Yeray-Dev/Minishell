@@ -36,6 +36,19 @@ size_t	count_tokes(t_list_token *s_list_token)
 	return (count);
 }
 
+static void	free_redirs(t_redir *redir)
+{
+	t_redir	*next;
+
+	while (redir)
+	{
+		next = redir->next;
+		free(redir->file);
+		free(redir);
+		redir = next;
+	}
+}
+
 void	free_cmd_list(t_list_cmd *list_cmd)
 {
 	t_cmd	*cmd;
@@ -50,10 +63,7 @@ void	free_cmd_list(t_list_cmd *list_cmd)
 		while (cmd->argv[i])
 			free(cmd->argv[i++]);
 		free(cmd->argv);
-		if (cmd->infile)
-			free(cmd->infile);
-		if (cmd->outfile)
-			free(cmd->outfile);
+		free_redirs(cmd->redirs);
 		if (cmd->heredoc_word)
 			free(cmd->heredoc_word);
 		if (cmd->heredoc_fd != -1)
@@ -63,6 +73,28 @@ void	free_cmd_list(t_list_cmd *list_cmd)
 	}
 	list_cmd->top = NULL;
 	list_cmd->last = NULL;
+}
+
+static void	add_redir(t_cmd *cmd, int type, char *file)
+{
+	t_redir	*redir;
+	t_redir	*last;
+
+	redir = malloc(sizeof(t_redir));
+	if (!redir)
+		return ;
+	redir->file = ft_strdup(file);
+	redir->type = type;
+	redir->next = NULL;
+	if (!cmd->redirs)
+	{
+		cmd->redirs = redir;
+		return ;
+	}
+	last = cmd->redirs;
+	while (last->next)
+		last = last->next;
+	last->next = redir;
 }
 
 void	set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token)
@@ -78,18 +110,15 @@ void	set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token)
 			new_cmd->heredoc_word = ft_strdup((*end_token)->next->name);
 			new_cmd->is_heredoc = 1;
 		}
-		else if (ft_strncmp((*end_token)->name, ">>", 2)
-			== 0 && (*end_token)->next)
-		{
-			new_cmd->outfile = ft_strdup((*end_token)->next->name);
-			new_cmd->append = 1;
-		}
+		else if (ft_strncmp((*end_token)->name, ">>", 2) == 0
+			&& (*end_token)->next)
+			add_redir(new_cmd, REDIR_TYPE_APPEND, (*end_token)->next->name);
 		else if (ft_strncmp((*end_token)->name, "<", 1) == 0
 			&& (*end_token)->next)
-			new_cmd->infile = ft_strdup((*end_token)->next->name);
+			add_redir(new_cmd, REDIR_TYPE_IN, (*end_token)->next->name);
 		else if (ft_strncmp((*end_token)->name, ">", 1) == 0
 			&& (*end_token)->next)
-			new_cmd->outfile = ft_strdup((*end_token)->next->name);
+			add_redir(new_cmd, REDIR_TYPE_OUT, (*end_token)->next->name);
 		*end_token = (*end_token)->next;
 	}
 }

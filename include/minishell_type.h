@@ -37,22 +37,30 @@ typedef enum e_builtin_type
 
 #define QUOTES 34
 #define QUOTE 39
-#define PIPE 124 
+#define PIPE 124
 #define REDIR_OUT 62
 #define REDIR_IN 60
+#define REDIR_TYPE_IN 0
+#define REDIR_TYPE_OUT 1
+#define REDIR_TYPE_APPEND 2
 
 // STRUCTS
+
+typedef struct s_redir
+{
+	char				*file;
+	int					type;
+	struct s_redir		*next;
+}	t_redir;
 
 typedef struct s_cmd
 {
 	char				**argv;
 	char				*path;
-	char				*infile;
-	char				*outfile;
+	t_redir				*redirs;
 	char				*heredoc_word;
 	int					is_heredoc;
 	int					heredoc_fd;
-	int					append;
 	int					has_pipe;
 	t_builtin_type		builtin_type;
 	struct s_cmd		*next;

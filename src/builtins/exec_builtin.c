@@ -68,6 +68,8 @@ int	exec_builtin(t_shell *sh, t_cmd *cmd)
 	saved_stdout = dup(STDOUT_FILENO);
 	if (apply_redirections(NULL, cmd) != 0)
 	{
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
 		close(saved_stdout);
 		sh->last_status = 1;
