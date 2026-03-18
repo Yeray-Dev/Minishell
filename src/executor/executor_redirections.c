@@ -90,21 +90,19 @@ void	handle_heredocs(t_list_cmd *cmd_list)
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 {
 	t_redir	*r;
-	int		in_error;
 	int		last_out_failed;
 
 	(void)cmd;
 	if (!original)
 		return (0);
 	r = original->redirs;
-	in_error = 0;
 	last_out_failed = 0;
 	while (r)
 	{
 		if (r->type == REDIR_TYPE_IN)
 		{
 			if (redirect_input(r->file) < 0)
-				in_error = 1;
+				return (1);
 		}
 		else
 		{
@@ -120,7 +118,7 @@ int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 		dup2(original->heredoc_fd, STDIN_FILENO);
 		close(original->heredoc_fd);
 	}
-	if (in_error || last_out_failed)
+	if (last_out_failed)
 		return (1);
 	return (0);
 }

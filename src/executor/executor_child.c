@@ -35,13 +35,13 @@ void	exec_child(t_shell *sh, t_exec_cmd *cmd, int i, t_exec *exec)
 	set_signal(SIGINT, SIG_DFL);
 	set_signal(SIGQUIT, SIG_DFL);
 	setup_pipes(exec, i);
-	if (apply_redirections(cmd, cmd->original))
-		exit(1);
 	if (cmd->is_builtin)
 	{
 		exec_builtin(sh, cmd->original);
 		exit(sh->last_status);
 	}
+	if (apply_redirections(cmd, cmd->original))
+		exit(1);
 	cmd->path = resolve_path(cmd->argv[0], sh->our_envp);
 	check_cmd(cmd);
 	execve(cmd->path, cmd->argv, sh->our_envp);
