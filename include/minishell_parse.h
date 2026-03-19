@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:38 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 10:33:36 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/19 08:43:42 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ char		*str_join_free(char *s1, char *s2);
 char		*str_append_char(char *s, char c);
 
 // Expander -> expander_quotes.c
-char		*expand_in_double(char *raw, int *i, char *res, t_shell *sh);
-char		*expand_in_single(char *raw, int *i, char *res);
+char		*expand_in_double(char *raw, int *i, t_shell *sh);
+char		*expand_in_single(char *raw, int *i);
 int			has_quotes(char *s);
 
 // Token -> token.c
@@ -50,10 +50,12 @@ int			*special_token(char *line, t_list_token *lst, int *i);
 void		create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);
 int			parser(t_shell *t_shell);
 
-// Parser -> parser_utils.c
-size_t		count_tokes(t_list_token *s_list_token);
+// Parser -> parser_free.c
+void		free_redirs(t_redir *redir);
 void		free_cmd_list(t_list_cmd *list_cmd);
 
+// Parser -> parser_utils.c
+size_t		count_tokes(t_list_token *s_list_token);
 void		set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token);
 void		add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd);
 void		create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd);

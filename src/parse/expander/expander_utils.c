@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 09:27:36 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 09:40:02 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/19 21:40:22 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,25 @@ t_tokens	*remove_token(t_list_token *list, t_tokens *prev, t_tokens *tok)
 	free(tok->name);
 	free(tok);
 	return (next);
+}
+
+char	**duplicate_envp(char **envp)
+{
+	int		len;
+	char	**our_envp;
+
+	len = 0;
+	while (envp[len] != NULL)
+		len++;
+	our_envp = malloc(sizeof(char *) * (len + 1));
+	if (!our_envp)
+		return (NULL);
+	len = 0;
+	while (envp[len] != NULL)
+	{
+		our_envp[len] = ft_strdup(envp[len]);
+		len++;
+	}
+	our_envp[len] = NULL;
+	return (our_envp);
 }

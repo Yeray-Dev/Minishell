@@ -6,11 +6,22 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 09:25:06 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 09:42:28 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/19 21:40:13 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*expand_next(char *raw, int *i, t_shell *sh)
+{
+	if (raw[*i] == '\'')
+		return (++(*i), expand_in_single(raw, i));
+	if (raw[*i] == '"')
+		return (++(*i), expand_in_double(raw, i, sh));
+	if (raw[*i] == '$')
+		return (expand_var(raw, i, sh));
+	return (str_append_char(NULL, raw[(*i)++]));
+}
 
 static char	*get_env_value(char *name, char **envp, int status)
 {
@@ -60,30 +71,15 @@ char	*expand_var(char *raw, int *i, t_shell *sh)
 static char	*expand_token(char *raw, t_shell *sh)
 {
 	char	*res;
-	char	*val;
+	char	*part;
 	int		i;
 
 	res = ft_strdup("");
 	i = 0;
 	while (raw[i])
 	{
-		if (raw[i] == '\'')
-		{
-			i++;
-			res = expand_in_single(raw, &i, res);
-		}
-		else if (raw[i] == '"')
-		{
-			i++;
-			res = expand_in_double(raw, &i, res, sh);
-		}
-		else if (raw[i] == '$')
-		{
-			val = expand_var(raw, &i, sh);
-			res = str_join_free(res, val);
-		}
-		else
-			res = str_append_char(res, raw[i++]);
+		part = expand_next(raw, &i, sh);
+		res = str_join_free(res, part);
 	}
 	return (res);
 }
@@ -114,25 +110,4 @@ void	expand_token_list(t_list_token *list, t_shell *sh)
 		prev = tok;
 		tok = tok->next;
 	}
-}
-
-char	**duplicate_envp(char **envp)
-{
-	int		len;
-	char	**our_envp;
-
-	len = 0;
-	while (envp[len] != NULL)
-		len++;
-	our_envp = malloc(sizeof(char *) * (len + 1));
-	if (!our_envp)
-		return (NULL);
-	len = 0;
-	while (envp[len] != NULL)
-	{
-		our_envp[len] = ft_strdup(envp[len]);
-		len++;
-	}
-	our_envp[len] = NULL;
-	return (our_envp);
 }

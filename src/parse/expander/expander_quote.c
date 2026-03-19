@@ -12,10 +12,12 @@
 
 #include "minishell.h"
 
-char	*expand_in_double(char *raw, int *i, char *res, t_shell *sh)
+char	*expand_in_double(char *raw, int *i, t_shell *sh)
 {
+	char	*res;
 	char	*val;
 
+	res = ft_strdup("");
 	while (raw[*i] && raw[*i] != '"')
 	{
 		if (raw[*i] == '$')
@@ -31,8 +33,11 @@ char	*expand_in_double(char *raw, int *i, char *res, t_shell *sh)
 	return (res);
 }
 
-char	*expand_in_single(char *raw, int *i, char *res)
+char	*expand_in_single(char *raw, int *i)
 {
+	char	*res;
+
+	res = ft_strdup("");
 	while (raw[*i] && raw[*i] != '\'')
 		res = str_append_char(res, raw[(*i)++]);
 	if (raw[*i] == '\'')
