@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:41 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 10:36:27 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 12:01:56 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,3 @@
 # include "minishell_executor.h"
 
 #endif
-// docker run -it --rm -v $(pwd):/minishell minishell-dev

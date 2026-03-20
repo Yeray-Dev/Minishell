@@ -68,6 +68,8 @@ int	parser(t_shell *t_shell)
 			t_shell->last_status = 2;
 			return (0);
 		}
+		if (validate_syntax(&t_shell->list_token, t_shell) == -1)
+			return (0);
 		expand_token_list(&t_shell->list_token, t_shell);
 		create_cmd(&t_shell->list_token, &t_shell->cmd_list);
 	}

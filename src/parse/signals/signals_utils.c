@@ -6,13 +6,11 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 09:55:48 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 09:55:49 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 11:47:36 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-extern int	rl_done;
 
 void	handler_sigint(int sig)
 {
@@ -40,7 +38,6 @@ void	handler_heredoc(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
-	rl_done = 1;
 	g_handler = 1;
 }
 

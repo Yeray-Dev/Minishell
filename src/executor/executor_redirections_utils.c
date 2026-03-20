@@ -47,6 +47,7 @@ static int	redirect_output(char *file, int append)
 
 int	apply_redirections_utils(int last_out_failed, t_redir *current_redir)
 {
+	(void)last_out_failed;
 	while (current_redir)
 	{
 		if (current_redir->type == REDIR_TYPE_IN)
@@ -58,11 +59,9 @@ int	apply_redirections_utils(int last_out_failed, t_redir *current_redir)
 		{
 			if (redirect_output(current_redir->file,
 					current_redir->type == REDIR_TYPE_APPEND) < 0)
-				last_out_failed = 1;
-			else
-				last_out_failed = 0;
+				return (1);
 		}
 		current_redir = current_redir->next;
 	}
-	return (last_out_failed);
+	return (0);
 }

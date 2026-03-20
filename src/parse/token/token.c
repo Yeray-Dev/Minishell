@@ -47,7 +47,7 @@ static int	token_stract_tokens(t_list_token *l_token)
 			return (-1);
 		while (l_token->shell->line[i] == ' ')
 			i++;
-		if (l_token->last)
+		if ((end - start) > 0 && l_token->last)
 			l_token->last->type = TOKEN_CMD;
 	}
 	return (0);

@@ -55,6 +55,7 @@ void		free_redirs(t_redir *redir);
 void		free_cmd_list(t_list_cmd *list_cmd);
 
 // Parser -> parser_utils.c
+int			validate_syntax(t_list_token *list_token, t_shell *sh);
 size_t		count_tokes(t_list_token *s_list_token);
 void		set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token);
 void		add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd);

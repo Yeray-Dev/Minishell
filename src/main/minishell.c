@@ -6,13 +6,26 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 10:02:12 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 10:10:13 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 11:46:34 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_handler = 0;
+
+static void	init_struct(t_shell *t_sh, char **envp)
+{
+	t_sh->our_envp = duplicate_envp(envp);
+	t_sh->last_status = 0;
+	t_sh->exit_status = 0;
+	t_sh->cd_home = NULL;
+	t_sh->line = NULL;
+	t_sh->list_token.top = NULL;
+	t_sh->list_token.last = NULL;
+	t_sh->cmd_list.top = NULL;
+	t_sh->cmd_list.last = NULL;
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -21,16 +34,8 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	init_signals();
-	t_shell.our_envp = duplicate_envp(envp);
-	t_shell.last_status = 0;
-	t_shell.exit_status = 0;
-	t_shell.cd_home = NULL;
-	t_shell.line = NULL;
-	t_shell.list_token.top = NULL;
-	t_shell.list_token.last = NULL;
+	init_struct(&t_shell, envp);
 	t_shell.list_token.shell = &t_shell;
-	t_shell.cmd_list.top = NULL;
-	t_shell.cmd_list.last = NULL;
 	while (1)
 	{
 		g_handler = 0;

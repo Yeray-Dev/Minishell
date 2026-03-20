@@ -14,7 +14,7 @@
 # define MINISHELL_BUILTIN_H
 
 # include "minishell.h"
-//cambiar exit status en todos por last status
+
 // ---------- DETECTAR Y EJECUTAR BUILTINS ----------
 void		detect_builtin(t_cmd *cmd);
 int			exec_builtin(t_shell *sh, t_cmd *cmd);
