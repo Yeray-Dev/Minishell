@@ -23,8 +23,14 @@ int	main(int argc, char **argv, char **envp)
 	init_signals();
 	t_shell.our_envp = duplicate_envp(envp);
 	t_shell.last_status = 0;
+	t_shell.exit_status = 0;
 	t_shell.cd_home = NULL;
+	t_shell.line = NULL;
+	t_shell.list_token.top = NULL;
+	t_shell.list_token.last = NULL;
 	t_shell.list_token.shell = &t_shell;
+	t_shell.cmd_list.top = NULL;
+	t_shell.cmd_list.last = NULL;
 	while (1)
 	{
 		g_handler = 0;

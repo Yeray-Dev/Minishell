@@ -16,10 +16,11 @@ static void	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
 {
 	char	*line;
 
+	set_signal(SIGINT, handler_heredoc);
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strcmp(line, cmd->heredoc_word) == 0)
+		if (!line || g_handler == 1 || ft_strcmp(line, cmd->heredoc_word) == 0)
 		{
 			free(line);
 			break ;
@@ -28,6 +29,7 @@ static void	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
 		write(hd_pipe[1], "\n", 1);
 		free(line);
 	}
+	set_signal(SIGINT, handler_readline);
 }
 
 void	handle_heredocs(t_list_cmd *cmd_list)

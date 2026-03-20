@@ -70,4 +70,5 @@ void		init_signals(void);
 void		handler_sigint(int sig);
 void		handler_sigquit(int sig);
 void		handler_readline(int sig);
+void		handler_heredoc(int sig);
 void		set_signal(int sig, void (*handler)(int));
