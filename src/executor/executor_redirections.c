@@ -19,7 +19,7 @@ static void	read_heredoc_loop(int *hd_pipe, char *limiter)
 	while (1)
 	{
 		write(1, "> ", 2);
-		line = get_next_line(STDIN_FILENO);
+		line = readline("> "); // o de esta otra forma se ve disitnto al ahcer doble ctrl c revisa las dos -> line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;
 		if (ft_strcmp(line, limiter) == 0)
