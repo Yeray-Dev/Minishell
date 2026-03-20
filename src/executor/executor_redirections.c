@@ -11,54 +11,103 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "minishell.h"
 
-static int	redirect_input(char *file)
+static void	read_heredoc_loop(int *hd_pipe, char *limiter)
 {
-	int	fd;
+	char	*line;
 
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
+	while (1)
 	{
-		perror(file);
+		write(1, "> ", 2);
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
+			break ;
+		if (ft_strcmp(line, limiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(hd_pipe[1], line, ft_strlen(line));
+		free(line);
+	}
+}
+
+static int	wait_for_heredoc_child(pid_t pid, int *hd_pipe)
+{
+	int		status;
+	void	(*old_sigint)(int);
+
+	old_sigint = signal(SIGINT, SIG_IGN);
+	close(hd_pipe[1]);
+	waitpid(pid, &status, 0);
+	signal(SIGINT, old_sigint);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		close(hd_pipe[0]);
 		return (-1);
 	}
-	dup2(fd, STDIN_FILENO);
-	close(fd);
 	return (0);
 }
 
-static int	redirect_output(char *file, int append)
+static int	read_heredoc_with_fork(t_cmd *cmd)
 {
-	int	fd;
+	pid_t	pid;
+	int		hd_pipe[2];
 
-	if (append != 0)
-		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
-	{
-		perror(file);
+	if (pipe(hd_pipe) < 0)
 		return (-1);
+	pid = fork();
+	if (pid < 0)
+		return (-1);
+	else if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		close(hd_pipe[0]);
+		read_heredoc_loop(hd_pipe, cmd->heredoc_word);
+		close(hd_pipe[1]);
+		exit(0);
 	}
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
+	else
+	{
+		if (wait_for_heredoc_child(pid, hd_pipe) < 0)
+			return (-1);
+		cmd->heredoc_fd = hd_pipe[0];
+	}
 	return (0);
+}
+
+void	handle_heredocs(t_list_cmd *cmd_list)
+{
+	t_cmd	*cmd;
+
+	cmd = cmd_list->top;
+	while (cmd)
+	{
+		if (cmd->is_heredoc && cmd->heredoc_word)
+		{
+			if (read_heredoc_with_fork(cmd) < 0)
+				cmd->heredoc_fd = -1;
+		}
+		cmd = cmd->next;
+	}
 }
 
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
 {
+	int	last_out_failed;
+
+	(void)cmd;
 	if (!original)
 		return (0);
-	if (original->infile != NULL)
+	last_out_failed = apply_redirections_utils(0, original->redirs);
+	if (last_out_failed == -1)
+		return (1);
+	if (original->is_heredoc && original->heredoc_fd != -1)
 	{
-		if (redirect_input(original->infile) < 0)
-			return (1);
+		dup2(original->heredoc_fd, STDIN_FILENO);
+		close(original->heredoc_fd);
 	}
-	if (original->outfile != NULL)
-	{
-		if (redirect_output(original->outfile, original->append) < 0)
-			return (1);
-	}
+	if (last_out_failed)
+		return (1);
 	return (0);
 }
