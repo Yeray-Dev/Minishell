@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_executor.h                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/17 19:12:35 by yblanco-          #+#    #+#             */
+/*   Updated: 2026/03/17 19:12:35 by yblanco-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 // FUNCTIONS
@@ -6,7 +18,7 @@
 */
 int			count_cmds(t_cmd *cmd);
 t_exec_cmd	*init_exec_cmd(t_cmd *cmd);
-t_exec		*init_exec_struct(t_shell *sh, t_cmd *cmd_list);
+t_exec		*init_exec_struct(t_cmd *cmd_list);
 void		build_exec_cmd_list(t_exec *exec, t_cmd *cmd_list);
 t_exec		*init_exec(t_shell *sh);
 
@@ -34,3 +46,17 @@ void		free_exec_resources(t_exec *exec);
 ** EXECUTION
 */
 void		execute_commands(t_shell *sh);
+void		cleanup_exec(t_exec *exec);
+/*
+** PATH
+*/
+
+char		*resolve_path(char *cmd, char **env);
+
+/*
+** REDIRECTIONS
+*/
+int	handle_heredocs(t_list_cmd *cmd_list);
+int			apply_redirections(t_exec_cmd *cmd, t_cmd *original);
+int			apply_redirections_utils(int last_out_failed,
+				t_redir *current_redir);
