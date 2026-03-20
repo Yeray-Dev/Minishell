@@ -12,84 +12,64 @@
 
 #include "minishell.h"
 
-static void	read_heredoc_loop(int *hd_pipe, char *limiter)
+static int	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
 {
 	char	*line;
 
+	g_handler = 0;
+	set_signal(SIGINT, handler_heredoc);
 	while (1)
 	{
-		write(1, "> ", 2);
-		line = readline("> "); // o de esta otra forma se ve disitnto al ahcer doble ctrl c revisa las dos -> line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (!line)
 			break ;
-		if (ft_strcmp(line, limiter) == 0)
+		if (g_handler == 1)
+		{
+			free(line);
+			set_signal(SIGINT, handler_readline);
+			return (130);
+		}
+		if (ft_strcmp(line, cmd->heredoc_word) == 0)
 		{
 			free(line);
 			break ;
 		}
 		write(hd_pipe[1], line, ft_strlen(line));
+		write(hd_pipe[1], "\n", 1);
 		free(line);
 	}
-}
-
-static int	wait_for_heredoc_child(pid_t pid, int *hd_pipe)
-{
-	int		status;
-	void	(*old_sigint)(int);
-
-	old_sigint = signal(SIGINT, SIG_IGN);
-	close(hd_pipe[1]);
-	waitpid(pid, &status, 0);
-	signal(SIGINT, old_sigint);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-	{
-		close(hd_pipe[0]);
-		return (-1);
-	}
+	set_signal(SIGINT, handler_readline);
 	return (0);
 }
 
-static int	read_heredoc_with_fork(t_cmd *cmd)
-{
-	pid_t	pid;
-	int		hd_pipe[2];
-
-	if (pipe(hd_pipe) < 0)
-		return (-1);
-	pid = fork();
-	if (pid < 0)
-		return (-1);
-	else if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		close(hd_pipe[0]);
-		read_heredoc_loop(hd_pipe, cmd->heredoc_word);
-		close(hd_pipe[1]);
-		exit(0);
-	}
-	else
-	{
-		if (wait_for_heredoc_child(pid, hd_pipe) < 0)
-			return (-1);
-		cmd->heredoc_fd = hd_pipe[0];
-	}
-	return (0);
-}
-
-void	handle_heredocs(t_list_cmd *cmd_list)
+int	handle_heredocs(t_list_cmd *cmd_list)
 {
 	t_cmd	*cmd;
+	int		hd_pipe[2];
+	int		status;
 
 	cmd = cmd_list->top;
 	while (cmd)
 	{
 		if (cmd->is_heredoc && cmd->heredoc_word)
 		{
-			if (read_heredoc_with_fork(cmd) < 0)
-				cmd->heredoc_fd = -1;
+			if (pipe(hd_pipe) < 0)
+			{
+				perror("pipe");
+				return (1);
+			}
+			status = read_heredoc_loop(cmd, hd_pipe);
+			close(hd_pipe[1]);
+			if (status == 130)
+			{
+				close(hd_pipe[0]);
+				return (130);
+			}
+			cmd->heredoc_fd = hd_pipe[0];
 		}
 		cmd = cmd->next;
 	}
+	return (0);
 }
 
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)
