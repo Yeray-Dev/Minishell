@@ -6,14 +6,13 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:38 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/19 08:43:42 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:54:13 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// FUNCTIONS
-
+// ---------- EXPANDER ----------
 // Expander -> expander.c
 char		**duplicate_envp(char **envp);
 void		expand_token_list(t_list_token *list_token, t_shell *sh);
@@ -28,6 +27,7 @@ char		*expand_in_double(char *raw, int *i, t_shell *sh);
 char		*expand_in_single(char *raw, int *i);
 int			has_quotes(char *s);
 
+// ---------- TOKEN ----------
 // Token -> token.c
 void		token_add_list(t_list_token *list_token, char *new_token);
 int			init_token(t_list_token *list_token);
@@ -46,6 +46,7 @@ void		free_token_list(t_list_token *list_token);
 // Token -> token_stract.c
 int			*special_token(char *line, t_list_token *lst, int *i);
 
+// ---------- PARSE ----------
 // Parser -> parser.c
 void		create_cmd(t_list_token *s_list_token, t_list_cmd *list_cmd);
 int			parser(t_shell *t_shell);
@@ -61,6 +62,7 @@ void		set_cmd_link_type(t_cmd *new_cmd, t_tokens **end_token);
 void		add_cmd_list(t_cmd *new_cmd, t_list_cmd *list_cmd);
 void		create_cmd_utils(t_list_token *s_list_token, t_cmd *current_cmd);
 
+// ---------- SIGNALS ----------
 // Signals -> signals_main_utils.c
 int			signal_proccess(t_shell *sh);
 

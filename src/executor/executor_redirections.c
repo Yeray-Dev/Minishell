@@ -12,30 +12,11 @@
 
 #include "minishell.h"
 
-static void	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
-{
-	char	*line;
-
-	set_signal(SIGINT, handler_heredoc);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || g_handler == 1 || ft_strcmp(line, cmd->heredoc_word) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(hd_pipe[1], line, ft_strlen(line));
-		write(hd_pipe[1], "\n", 1);
-		free(line);
-	}
-	set_signal(SIGINT, handler_readline);
-}
-
-void	handle_heredocs(t_list_cmd *cmd_list)
+int	handle_heredocs(t_list_cmd *cmd_list)
 {
 	t_cmd	*cmd;
 	int		hd_pipe[2];
+	int		status;
 
 	cmd = cmd_list->top;
 	while (cmd)
@@ -43,17 +24,16 @@ void	handle_heredocs(t_list_cmd *cmd_list)
 		if (cmd->is_heredoc && cmd->heredoc_word)
 		{
 			if (pipe(hd_pipe) < 0)
-			{
-				perror("pipe");
-				cmd = cmd->next;
-				continue ;
-			}
-			read_heredoc_loop(cmd, hd_pipe);
+				return (perror("pipe"), 1);
+			status = read_heredoc_loop(cmd, hd_pipe);
 			close(hd_pipe[1]);
+			if (status == 130)
+				return (close(hd_pipe[0]), 130);
 			cmd->heredoc_fd = hd_pipe[0];
 		}
 		cmd = cmd->next;
 	}
+	return (0);
 }
 
 int	apply_redirections(t_exec_cmd *cmd, t_cmd *original)

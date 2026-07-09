@@ -6,7 +6,7 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 10:02:12 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/20 11:46:34 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 13:43:49 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void	init_struct(t_shell *t_sh, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	t_shell;
+	int		ret;
 
 	(void)argc;
 	(void)argv;
@@ -40,9 +41,10 @@ int	main(int argc, char **argv, char **envp)
 	{
 		g_handler = 0;
 		t_shell.line = readline("MiniShell: > ");
-		if (signal_proccess(&t_shell) == 1)
+		ret = signal_proccess(&t_shell);
+		if (ret == 1)
 			continue ;
-		else if (signal_proccess(&t_shell) == -1)
+		else if (ret == -1)
 			break ;
 		parser(&t_shell);
 		execute_commands(&t_shell);

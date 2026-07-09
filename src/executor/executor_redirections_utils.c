@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_redirections_utils.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jugarcia <jugarcia@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 21:34:44 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/19 21:35:40 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:24:31 by jugarcia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,57 @@ int	apply_redirections_utils(int last_out_failed, t_redir *current_redir)
 		}
 		current_redir = current_redir->next;
 	}
+	return (0);
+}
+
+static char	*heredoc_readline(void)
+{
+	char	c;
+	char	buf[2];
+	char	*line;
+	char	*tmp;
+
+	line = ft_strdup("");
+	if (!line)
+		return (NULL);
+	write(1, "> ", 2);
+	buf[1] = '\0';
+	while (read(0, &c, 1) == 1)
+	{
+		if (c == '\n')
+			return (line);
+		buf[0] = c;
+		tmp = ft_strjoin(line, buf);
+		free(line);
+		line = tmp;
+		if (!line)
+			return (NULL);
+	}
+	free(line);
+	return (NULL);
+}
+
+int	read_heredoc_loop(t_cmd *cmd, int *hd_pipe)
+{
+	char	*line;
+
+	g_handler = 0;
+	set_signal(SIGINT, handler_heredoc);
+	while (1)
+	{
+		line = heredoc_readline();
+		if (!line)
+		{
+			if (g_handler == 1)
+				return (set_signal(SIGINT, handler_readline), 130);
+			break ;
+		}
+		if (ft_strcmp(line, cmd->heredoc_word) == 0)
+			return (free(line), set_signal(SIGINT, handler_readline), 0);
+		write(hd_pipe[1], line, ft_strlen(line));
+		write(hd_pipe[1], "\n", 1);
+		free(line);
+	}
+	set_signal(SIGINT, handler_readline);
 	return (0);
 }

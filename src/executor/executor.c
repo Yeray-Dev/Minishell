@@ -33,13 +33,21 @@ static t_exec	*prepare_exec(t_shell *sh)
 void	execute_commands(t_shell *sh)
 {
 	t_exec	*exec;
+	int		status;
 
-	handle_heredocs(&sh->cmd_list);
+	status = handle_heredocs(&sh->cmd_list);
+	if (status == 130)
+	{
+		sh->last_status = 130;
+		return ;
+	}
 	exec = prepare_exec(sh);
 	if (!exec)
 		return ;
+	set_signal(SIGINT, handler_sigint);
 	executor_loop(sh, exec);
 	close_all_pipes_in_parent(exec);
 	wait_children(sh, exec);
+	set_signal(SIGINT, handler_readline);
 	cleanup_exec(exec);
 }

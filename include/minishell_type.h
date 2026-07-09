@@ -6,13 +6,13 @@
 /*   By: yblanco- <yblanco-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 19:12:27 by yblanco-          #+#    #+#             */
-/*   Updated: 2026/03/18 10:31:59 by yblanco-         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:52:06 by yblanco-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// ENUM
+// ---------- ENUM ----------
 
 typedef enum e_token_type
 {
@@ -33,7 +33,7 @@ typedef enum e_builtin_type
 	BI_EXIT
 }	t_builtin_type;
 
-// DEFINE
+// ---------- DEFINE ----------
 
 #define QUOTES 34
 #define QUOTE 39
@@ -44,7 +44,7 @@ typedef enum e_builtin_type
 #define REDIR_TYPE_OUT 1
 #define REDIR_TYPE_APPEND 2
 
-// STRUCTS
+// ---------- STRUCTS ----------
 
 typedef struct s_redir
 {
@@ -119,6 +119,6 @@ typedef struct s_shell
 	char				*line;
 }	t_shell;
 
-// GLOBALS
+// ---------- GLOBAL ----------
 
 extern volatile sig_atomic_t	g_handler;

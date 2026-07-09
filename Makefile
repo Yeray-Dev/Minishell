@@ -9,7 +9,7 @@ SRC_DIR = src
 SRC = $(shell find $(SRC_DIR) -name '*.c')
 OBJS = $(SRC:.c=.o)
 
-# Librerías necesarias
+
 LIBS = -lreadline
 
 all: $(LIBFT) $(NAME)
